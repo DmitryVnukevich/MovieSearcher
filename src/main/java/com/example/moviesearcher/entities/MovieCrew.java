@@ -1,11 +1,31 @@
 package com.example.moviesearcher.entities;
 
-import lombok.Data;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(name = "movie_crew")
 public class MovieCrew {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long movieId;
-    private Long crewId;
-    private Long roleId;
+
+    @ManyToOne
+    @JoinColumn(name = "movie_id", nullable = false)
+    private Movies movie;
+
+    @ManyToOne
+    @JoinColumn(name = "crew_id", nullable = false)
+    private CrewMembers crewMember;
+
+    @ManyToOne
+    @JoinColumn(name = "role_id", nullable = false)
+    private Roles role;
 }

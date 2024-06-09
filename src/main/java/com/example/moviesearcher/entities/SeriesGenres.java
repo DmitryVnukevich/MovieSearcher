@@ -1,9 +1,25 @@
 package com.example.moviesearcher.entities;
 
-import lombok.Data;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(name = "series_genres")
 public class SeriesGenres {
-    private Long seriesId;
-    private Long genreId;
+    @Id
+    @ManyToOne
+    @JoinColumn(name = "series_id", nullable = false)
+    private Series series;
+
+    @Id
+    @ManyToOne
+    @JoinColumn(name = "genre_id", nullable = false)
+    private Genres genre;
 }
