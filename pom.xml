@@ -11,8 +11,8 @@
 	<groupId>com.example</groupId>
 	<artifactId>Moviesearcher</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Moviesearcher</name>
-	<description>Moviesearcher</description>
+	<name>MovieSearcher</name>
+	<description>MovieSearcher</description>
 	<properties>
 		<java.version>17</java.version>
 	</properties>
