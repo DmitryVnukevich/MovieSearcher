@@ -48,7 +48,6 @@ databaseChangeLog:
                   type: SMALLINT
                   constraints:
                     nullable: false
-                    check: "rating >= 1 AND rating <= 10"
               - column:
                   name: review
                   type: TEXT
@@ -299,9 +298,6 @@ databaseChangeLog:
                   type: BIGINT
                   constraints:
                     nullable: false
-              - constraints:
-                  primaryKey:
-                    columns: movie_id, genre_id
 
         - createTable:
             tableName: series_genres
@@ -316,9 +312,6 @@ databaseChangeLog:
                   type: BIGINT
                   constraints:
                     nullable: false
-              - constraints:
-                  primaryKey:
-                    columns: series_id, genre_id
 
         - addForeignKeyConstraint:
             baseTableName: users
