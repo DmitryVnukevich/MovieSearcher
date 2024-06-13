@@ -1,4 +1,7 @@
 package com.example.moviesearcher.repository;
 
-public interface CrewMembersRepository {
+import com.example.moviesearcher.entities.CrewMembers;
+import org.springframework.data.repository.CrudRepository;
+
+public interface CrewMembersRepository extends CrudRepository<CrewMembers, Long> {
 }

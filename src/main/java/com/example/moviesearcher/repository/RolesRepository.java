@@ -1,4 +1,7 @@
 package com.example.moviesearcher.repository;
 
-public interface RolesRepository {
+import com.example.moviesearcher.entities.Roles;
+import org.springframework.data.repository.CrudRepository;
+
+public interface RolesRepository extends CrudRepository<Roles, Long> {
 }

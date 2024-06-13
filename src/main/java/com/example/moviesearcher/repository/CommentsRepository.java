@@ -1,4 +1,7 @@
 package com.example.moviesearcher.repository;
 
-public interface CommentsRepository {
+import com.example.moviesearcher.entities.Comments;
+import org.springframework.data.repository.CrudRepository;
+
+public interface CommentsRepository extends CrudRepository<Comments, Long> {
 }
