@@ -1,4 +1,4 @@
 package com.example.moviesearcher.repository;
 
-public class EpisodesRepository {
+public interface EpisodesRepository {
 }
