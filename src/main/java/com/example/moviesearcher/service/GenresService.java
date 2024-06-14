@@ -33,4 +33,8 @@ public class GenresService {
     public void deleteGenre(Long id) {
         genresRepository.deleteById(id);
     }
+    @Transactional
+    public Genres updateGenre(Genres genre) {
+        return genresRepository.save(genre);
+    }
 }

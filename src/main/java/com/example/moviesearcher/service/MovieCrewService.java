@@ -33,4 +33,9 @@ public class MovieCrewService {
     public void deleteMovieCrew(Long id) {
         movieCrewRepository.deleteById(id);
     }
+
+    @Transactional
+    public MovieCrew updateMovieCrew(MovieCrew movieCrew) {
+        return movieCrewRepository.save(movieCrew);
+    }
 }

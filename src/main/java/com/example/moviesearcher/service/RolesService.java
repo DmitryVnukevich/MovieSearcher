@@ -33,4 +33,9 @@ public class RolesService {
     public void deleteRole(Long id) {
         rolesRepository.deleteById(id);
     }
+
+    @Transactional
+    public Roles updateRole(Roles role) {
+        return rolesRepository.save(role);
+    }
 }

@@ -33,4 +33,9 @@ public class SeriesCrewService {
     public void deleteSeriesCrew(Long id) {
         seriesCrewRepository.deleteById(id);
     }
+
+    @Transactional
+    public SeriesCrew updateSeriesCrew(SeriesCrew seriesCrew) {
+        return seriesCrewRepository.save(seriesCrew);
+    }
 }

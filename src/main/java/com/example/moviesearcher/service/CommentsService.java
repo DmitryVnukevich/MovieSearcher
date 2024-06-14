@@ -33,4 +33,9 @@ public class CommentsService {
     public void deleteComment(Long id) {
         commentRepository.deleteById(id);
     }
+
+    @Transactional
+    public Comments updateComment(Comments comment) {
+        return commentRepository.save(comment);
+    }
 }

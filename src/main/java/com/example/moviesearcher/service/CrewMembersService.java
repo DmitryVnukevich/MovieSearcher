@@ -33,4 +33,9 @@ public class CrewMembersService {
     public void deleteCrewMember(Long id) {
         crewMembersRepository.deleteById(id);
     }
+
+    @Transactional
+    public CrewMembers updateCrewMember(CrewMembers crewMember) {
+        return crewMembersRepository.save(crewMember);
+    }
 }

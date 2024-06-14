@@ -33,4 +33,9 @@ public class SeriesService {
     public void deleteSeries(Long id) {
         seriesRepository.deleteById(id);
     }
+
+    @Transactional
+    public Series updateSeries(Series series) {
+        return seriesRepository.save(series);
+    }
 }

@@ -33,4 +33,9 @@ public class UsersService {
     public void deleteUser(Long id) {
         usersRepository.deleteById(id);
     }
+
+    @Transactional
+    public Users updateUser(Users user) {
+        return usersRepository.save(user);
+    }
 }

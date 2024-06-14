@@ -33,4 +33,9 @@ public class MoviesService {
     public void deleteMovie(Long id) {
         moviesRepository.deleteById(id);
     }
+
+    @Transactional
+    public Movies updateMovie(Movies movie) {
+        return moviesRepository.save(movie);
+    }
 }
