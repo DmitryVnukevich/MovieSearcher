@@ -46,7 +46,7 @@ public class Series {
 
     @ManyToMany
     @JoinTable(
-            name = "series_genres",
+            name = "series_genre",
             joinColumns = @JoinColumn(name = "series_id"),
             inverseJoinColumns = @JoinColumn(name = "genre_id")
     )

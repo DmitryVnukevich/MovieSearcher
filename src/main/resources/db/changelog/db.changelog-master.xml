@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
+    <include file="sql/create-role-table.sql" relativeToChangelogFile="true"/>
+    <include file="sql/create-genre-table.sql" relativeToChangelogFile="true"/>
+    <include file="sql/create-crew-member-table.sql" relativeToChangelogFile="true"/>
+    <include file="sql/create-user-table.sql" relativeToChangelogFile="true"/>
+    <include file="sql/create-movie-table.sql" relativeToChangelogFile="true"/>
+    <include file="sql/create-series-table.sql" relativeToChangelogFile="true"/>
+    <include file="sql/create-episode-table.sql" relativeToChangelogFile="true"/>
+    <include file="sql/create-movie-crew-table.sql" relativeToChangelogFile="true"/>
+    <include file="sql/create-movie-genre-table.sql" relativeToChangelogFile="true"/>
+    <include file="sql/create-series-crew-table.sql" relativeToChangelogFile="true"/>
+    <include file="sql/create-series-genre-table.sql" relativeToChangelogFile="true"/>
+    <include file="sql/create-comment-table.sql" relativeToChangelogFile="true"/>
+</databaseChangeLog>
