@@ -1,0 +1,7 @@
+package com.example.moviesearcher.repository;
+
+import com.example.moviesearcher.entity.Genre;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface GenreRepository extends JpaRepository<Genre, Long> {
+}
