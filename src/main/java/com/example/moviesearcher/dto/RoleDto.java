@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RoleDto {
-    private String id;
+    private Long id;
     private String name;
     private List<User> users;
 }
