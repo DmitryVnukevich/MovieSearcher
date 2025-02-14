@@ -6,7 +6,6 @@ import lombok.Setter;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
-import java.sql.Time;
 import java.util.Date;
 import java.util.List;
 
@@ -31,7 +30,7 @@ public class Movie {
     private Date releaseDate;
 
     @Column(nullable = false)
-    private Time duration;
+    private short duration;
 
     @Column(name = "poster_url", nullable = false)
     private String posterUrl;

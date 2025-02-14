@@ -28,7 +28,7 @@ public class Comment {
     @Column(name = "created_at", nullable = false)
     private Date createdAt;
 
-    private String user_id;
+    private Long user_id;
 
     @ManyToOne
     @JoinColumn(name = "movie_id")

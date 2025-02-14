@@ -2,6 +2,12 @@ package com.example.moviesearcher.service;
 
 import com.example.moviesearcher.entity.User;
 import com.example.moviesearcher.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,14 +16,20 @@ import java.util.List;
 @Service
 public class UserService {
 
-    private final UserRepository userRepository;
+    @Autowired
+    private UserRepository userRepository;
 
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    @Autowired
+    private JWTService jwtService;
+
+    @Autowired
+    AuthenticationManager authenticationManager;
+
+    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
     @Transactional
     public User saveUser(User user) {
+        user.setPassword(encoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
@@ -37,5 +49,16 @@ public class UserService {
     @Transactional
     public User updateUser(User user) {
         return userRepository.save(user);
+    }
+
+    public String verifyUser(User user) {
+        Authentication authentication =
+                authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
+
+        if(authentication.isAuthenticated()){
+            return jwtService.generateToken(user.getUsername());
+        }
+
+        return "Fail";
     }
 }
