@@ -1,5 +1,6 @@
 package com.example.moviesearcher.dto;
 
+import com.example.moviesearcher.entity.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,6 +9,7 @@ import lombok.Setter;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 @Getter
 @Setter
@@ -29,6 +31,7 @@ public class UserDTO {
     @Size(min = 6, max = 20, message = "Password must be between 3 and 20 characters")
     private String password;
 
-    private RoleDTO role;
+    //private RoleDTO role;
+    private List<UserRole> roles;
 }
 

@@ -6,6 +6,8 @@ import lombok.Setter;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -25,9 +27,15 @@ public class User {
 
     private String password;
 
-    @ManyToOne
+    /*@ManyToOne
     @JoinColumn(name = "role_id")
-    private Role role;
+    private Role role;*/
+
+    @ElementCollection(targetClass = UserRole.class)
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role")
+    private List<UserRole> roles;
 
     @Override
     public String toString() {
@@ -36,7 +44,7 @@ public class User {
                 ", username='" + username + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
-                ", role=" + role +
+                ", roles=" + roles +
                 '}';
     }
 }

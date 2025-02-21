@@ -31,8 +31,9 @@ public class SecurityConfig {
         return http
                 .csrf(customizer -> customizer.disable())
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("register", "login")
-                        .permitAll()
+                        .requestMatchers("register", "login").permitAll()
+                        .requestMatchers("/admin/**").hasRole("ADMIN") // Только для ADMIN
+                        .requestMatchers("/moderator/**").hasAnyRole("MODERATOR", "ADMIN") // Для MODERATOR или ADMIN
                         .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session ->

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -24,6 +25,12 @@ public class CrewMember {
 
     @Column(name = "lastname", nullable = false)
     private String lastName;
+
+    @ElementCollection(targetClass = CrewRole.class)
+    @CollectionTable(name = "crew_member_roles", joinColumns = @JoinColumn(name = "crew_member_id"))
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role")
+    private List<CrewRole> roles;
 
     @Column(name = "birth_date", nullable = false)
     private Date birthDate;
