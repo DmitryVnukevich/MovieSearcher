@@ -1,23 +1,33 @@
-package com.example.moviesearcher.entity;
+package com.example.moviesearcher.config;
 
+import com.example.moviesearcher.entity.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.stream.Collectors;
 
-public class CustomUserDetails implements UserDetails {
+public class UserPrincipals implements UserDetails {
 
     private User user;
 
-    public CustomUserDetails(User user){
+    public UserPrincipals(User user){
         this.user = user;
     }
 
-    @Override
+    /*@Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singleton(new SimpleGrantedAuthority("USER"));
+    }*/
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities(){
+        return Arrays.stream(user.getRole().getName().split(", "))
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -26,9 +36,7 @@ public class CustomUserDetails implements UserDetails {
     }
 
     @Override
-    public String getUsername() {
-        return user.getUsername();
-    }
+    public String getUsername() { return user.getUsername(); }
 
     @Override
     public boolean isAccountNonExpired() {

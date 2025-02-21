@@ -1,11 +1,14 @@
 package com.example.moviesearcher.service;
 
+import com.example.moviesearcher.dto.RoleDTO;
 import com.example.moviesearcher.entity.Role;
+import com.example.moviesearcher.mapper.RoleMapper;
 import com.example.moviesearcher.repository.RoleRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class RoleService {
@@ -17,16 +20,22 @@ public class RoleService {
     }
 
     @Transactional
-    public Role saveRole(Role role) {
-        return roleRepository.save(role);
+    public RoleDTO saveRole(RoleDTO roleDTO) {
+        Role role = RoleMapper.INSTANCE.roleDTOToRole(roleDTO);
+        role = roleRepository.save(role);
+        return RoleMapper.INSTANCE.roleToRoleDTO(role);
     }
 
-    public List<Role> findAllRoles() {
-        return roleRepository.findAll();
+    public List<RoleDTO> findAllRoles() {
+        return roleRepository.findAll().stream()
+                .map(RoleMapper.INSTANCE::roleToRoleDTO)
+                .collect(Collectors.toList());
     }
 
-    public Role findRoleById(Long id) {
-        return roleRepository.findById(id).orElse(null);
+    public RoleDTO findRoleById(Long id) {
+        return roleRepository.findById(id)
+                .map(RoleMapper.INSTANCE::roleToRoleDTO)
+                .orElse(null);
     }
 
     @Transactional
@@ -35,7 +44,9 @@ public class RoleService {
     }
 
     @Transactional
-    public Role updateRole(Role role) {
-        return roleRepository.save(role);
+    public RoleDTO updateRole(RoleDTO roleDTO) {
+        Role role = RoleMapper.INSTANCE.roleDTOToRole(roleDTO);
+        role = roleRepository.save(role);
+        return RoleMapper.INSTANCE.roleToRoleDTO(role);
     }
 }

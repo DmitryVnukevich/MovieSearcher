@@ -1,6 +1,6 @@
-package com.example.moviesearcher.service;
+package com.example.moviesearcher.config;
 
-import com.example.moviesearcher.entity.CustomUserDetails;
+import com.example.moviesearcher.config.UserPrincipals;
 import com.example.moviesearcher.entity.User;
 import com.example.moviesearcher.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CustomUserDetailsService implements UserDetailsService {
+public class UserPrincipalsService implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
 
@@ -23,6 +23,6 @@ public class CustomUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("User not found");
         }
 
-        return new CustomUserDetails(user);
+        return new UserPrincipals(user);
     }
 }

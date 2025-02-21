@@ -1,3 +1,4 @@
+/*
 package com.example.moviesearcher.controller;
 
 import com.example.moviesearcher.entity.User;
@@ -28,29 +29,78 @@ public class UserController {
         return userService.verifyUser(user);
     }
 
-    /*@PostMapping
+    */
+/*@PostMapping
     public User createUser(@RequestBody User user) {
         return userService.saveUser(user);
-    }*/
+    }*//*
 
-    /*@GetMapping
+
+    */
+/*@RequestMapping("/users")
+    @GetMapping
     public List<User> getAllUsers() {
         return userService.findAllUsers();
-    }*/
+    }*//*
 
-    /*@GetMapping("/{id}")
+
+    */
+/*@GetMapping("/{id}")
     public User getUserById(@PathVariable Long id) {
         return userService.findUserById(id);
-    }*/
+    }*//*
 
-    /*@PutMapping("/{id}")
+
+    */
+/*@PutMapping("/{id}")
     public User updateUser(@PathVariable Long id, @RequestBody User userDetails) {
         userDetails.setId(id);
         return userService.updateUser(userDetails);
-    }*/
+    }*//*
 
-    /*@DeleteMapping("/{id}")
+
+    */
+/*@DeleteMapping("/{id}")
     public void deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
-    }*/
+    }*//*
+
+}
+*/
+package com.example.moviesearcher.controller;
+
+import com.example.moviesearcher.dto.UserDTO;
+import com.example.moviesearcher.entity.User;
+import com.example.moviesearcher.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+//@RequestMapping("/users")
+public class UserController {
+
+    private final UserService userService;
+
+    @Autowired
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
+    @PostMapping("/register")
+    public UserDTO register(@RequestBody UserDTO userDTO) {
+        return userService.saveUser(userDTO);
+    }
+
+    @PostMapping("/login")
+    public String login(@RequestBody UserDTO userDTO) {
+        return userService.verifyUser(userDTO);
+    }
+
+    @PutMapping("/{id}")
+    public UserDTO updateUser(@PathVariable Long id, @RequestBody UserDTO userDTO) {
+        userDTO.setId(id);
+        return userService.updateUser(userDTO);
+    }
 }

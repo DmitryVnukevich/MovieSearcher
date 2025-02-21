@@ -30,7 +30,7 @@ public class Movie {
     private Date releaseDate;
 
     @Column(nullable = false)
-    private short duration;
+    private Short duration;
 
     @Column(name = "poster_url", nullable = false)
     private String posterUrl;

@@ -1,4 +1,4 @@
 package com.example.moviesearcher.controller;
 
-public class CustomUserDetailsController {
+public class UserInfoController {
 }

@@ -1,6 +1,5 @@
 package com.example.moviesearcher.config;
 
-import com.example.moviesearcher.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,7 +20,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     @Autowired
-    private CustomUserDetailsService customUserDetailsService;
+    private UserPrincipalsService userPrincipalsService;
 
     @Autowired
     private JwtFilter jwtFilter;
@@ -46,7 +45,7 @@ public class SecurityConfig {
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setPasswordEncoder(new BCryptPasswordEncoder(12));
-        provider.setUserDetailsService(customUserDetailsService);
+        provider.setUserDetailsService(userPrincipalsService);
 
         return provider;
     }
