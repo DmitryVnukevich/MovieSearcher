@@ -1,5 +1,6 @@
 package com.example.moviesearcher.config;
 
+import com.example.moviesearcher.service.UserPrincipalsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

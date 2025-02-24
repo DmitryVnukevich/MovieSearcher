@@ -37,6 +37,9 @@ public class User {
     @Column(name = "role")
     private List<UserRole> roles;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private UserInfo userInfo;
+
     @Override
     public String toString() {
         return "User{" +

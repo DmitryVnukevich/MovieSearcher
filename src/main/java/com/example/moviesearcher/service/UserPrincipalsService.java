@@ -1,5 +1,6 @@
-package com.example.moviesearcher.config;
+package com.example.moviesearcher.service;
 
+import com.example.moviesearcher.config.UserPrincipals;
 import com.example.moviesearcher.entity.User;
 import com.example.moviesearcher.repository.UserRepository;
 import org.hibernate.Hibernate;

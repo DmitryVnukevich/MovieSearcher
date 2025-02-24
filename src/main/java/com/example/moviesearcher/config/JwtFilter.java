@@ -1,6 +1,7 @@
 package com.example.moviesearcher.config;
 
 import com.example.moviesearcher.service.JWTService;
+import com.example.moviesearcher.service.UserPrincipalsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
