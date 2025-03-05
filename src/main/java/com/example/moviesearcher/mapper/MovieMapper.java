@@ -5,9 +5,9 @@ import com.example.moviesearcher.entity.Movie;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
-@Mapper (uses = {CommentMapper.class, CrewMemberMapper.class, GenreMapper.class})
+@Mapper
 public interface MovieMapper {
-    MovieMapper INSTANCE = Mappers.getMapper(MovieMapper.class);
+    MovieMapper MOVIE_MAPPER = Mappers.getMapper(MovieMapper.class);
 
     MovieDTO movieToMovieDTO(Movie movie);
 

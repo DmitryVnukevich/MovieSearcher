@@ -31,7 +31,6 @@ public class UserDTO {
     @Size(min = 6, max = 20, message = "Password must be between 3 and 20 characters")
     private String password;
 
-    //private RoleDTO role;
     private List<UserRole> roles;
 }
 

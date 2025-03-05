@@ -33,5 +33,6 @@ public class CommentDTO {
 
     private String username;
 
+    @NotNull(message = "Movie ID is mandatory")
     private Long movieId;
 }

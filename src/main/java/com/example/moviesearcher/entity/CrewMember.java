@@ -26,10 +26,9 @@ public class CrewMember {
     @Column(name = "lastname", nullable = false)
     private String lastName;
 
-    @ElementCollection(targetClass = CrewRole.class)
-    @CollectionTable(name = "crew_member_roles", joinColumns = @JoinColumn(name = "crew_member_id"))
+    @ElementCollection
     @Enumerated(EnumType.STRING)
-    @Column(name = "role")
+    @Column(nullable = false)
     private List<CrewRole> roles;
 
     @Column(name = "birth_date", nullable = false)

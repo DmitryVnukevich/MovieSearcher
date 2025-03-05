@@ -17,8 +17,8 @@ public enum CrewRole {
     VISUAL_EFFECTS_SUPERVISOR, // Супервайзер визуальных эффектов
     CASTING_DIRECTOR,        // Кастинг-директор
     EXECUTIVE_PRODUCER,      // Исполнительный продюсер
-    ANIMATOR,                // Аниматор (дополнительно)
-    VOICE_ACTOR,             // Актер озвучки (дополнительно)
-    PUPPETEER,               // Кукловод (дополнительно)
-    ANIMAL_TRAINER           // Дрессировщик животных (дополнительно)
+    ANIMATOR,                // Аниматор
+    VOICE_ACTOR,             // Актер озвучки
+    PUPPETEER,               // Кукловод
+    ANIMAL_TRAINER           // Дрессировщик животных
 }

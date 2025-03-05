@@ -2,42 +2,49 @@ package com.example.moviesearcher.service;
 
 import com.example.moviesearcher.dto.CommentDTO;
 import com.example.moviesearcher.entity.Comment;
-import com.example.moviesearcher.mapper.CommentMapper;
 import com.example.moviesearcher.repository.CommentRepository;
+import com.example.moviesearcher.repository.MovieRepository;
+import com.example.moviesearcher.repository.UserRepository;
+import static com.example.moviesearcher.mapper.CommentMapper.COMMENT_MAPPER;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class CommentService {
 
     private final CommentRepository commentRepository;
-
-    public CommentService(CommentRepository commentRepository) {
-        this.commentRepository = commentRepository;
-    }
-
+    private final MovieRepository movieRepository;
+    private final UserRepository userRepository;
     @Transactional
     public CommentDTO saveComment(CommentDTO commentDTO) {
-        Comment comment = CommentMapper.INSTANCE.commentDTOToComment(commentDTO);
-        comment.setCreatedAt(new Date());
-        comment = commentRepository.save(comment);
-        return CommentMapper.INSTANCE.commentToCommentDTO(comment);
-    }
+        movieRepository.findById(commentDTO.getMovieId())
+                .orElseThrow(() -> new IllegalArgumentException("Movie not found with ID: " + commentDTO.getMovieId()));
 
-    public List<CommentDTO> findAllComments() {
-        return commentRepository.findAll().stream()
-                .map(CommentMapper.INSTANCE::commentToCommentDTO)
-                .collect(Collectors.toList());
+        Comment comment = COMMENT_MAPPER.commentDTOToComment(commentDTO);
+        comment = commentRepository.save(comment);
+
+        CommentDTO result = COMMENT_MAPPER.commentToCommentDTO(comment);
+        userRepository.findById(comment.getUserId())
+                .ifPresent(user -> result.setUsername(user.getUsername()));
+
+        return result;
     }
 
     public CommentDTO findCommentById(Long id) {
         return commentRepository.findById(id)
-                .map(CommentMapper.INSTANCE::commentToCommentDTO)
+                .map(this::enrichCommentDTOWithUsername)
                 .orElse(null);
+    }
+
+    public List<CommentDTO> findCommentsByMovieId(Long movieId) {
+        return commentRepository.findByMovieId(movieId).stream()
+                .map(this::enrichCommentDTOWithUsername)
+                .collect(Collectors.toList());
     }
 
     @Transactional
@@ -47,8 +54,19 @@ public class CommentService {
 
     @Transactional
     public CommentDTO updateComment(CommentDTO commentDTO) {
-        Comment comment = CommentMapper.INSTANCE.commentDTOToComment(commentDTO);
+        movieRepository.findById(commentDTO.getMovieId())
+                .orElseThrow(() -> new IllegalArgumentException("Movie not found with ID: " + commentDTO.getMovieId()));
+
+        Comment comment = COMMENT_MAPPER.commentDTOToComment(commentDTO);
         comment = commentRepository.save(comment);
-        return CommentMapper.INSTANCE.commentToCommentDTO(comment);
+
+        return enrichCommentDTOWithUsername(comment);
+    }
+
+    private CommentDTO enrichCommentDTOWithUsername(Comment comment) {
+        CommentDTO commentDTO = COMMENT_MAPPER.commentToCommentDTO(comment);
+        userRepository.findById(comment.getUserId())
+                .ifPresent(user -> commentDTO.setUsername(user.getUsername()));
+        return commentDTO;
     }
 }

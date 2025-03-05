@@ -1,64 +1,67 @@
 package com.example.moviesearcher.controller;
 
+import com.example.moviesearcher.dto.CrewMemberDTO;
 import com.example.moviesearcher.dto.UserInfoDTO;
+import com.example.moviesearcher.service.CrewMemberService;
 import com.example.moviesearcher.service.UserInfoService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/userinfo")
+@RequestMapping("/user-info")
+@RequiredArgsConstructor
 public class UserInfoController {
 
     private final UserInfoService userInfoService;
-
-    @Autowired
-    public UserInfoController(UserInfoService userInfoService) {
-        this.userInfoService = userInfoService;
-    }
+    private final CrewMemberService crewMemberService;
 
     @PostMapping
-    public ResponseEntity<UserInfoDTO> createUserInfo(@RequestBody UserInfoDTO userInfoDTO) {
-        UserInfoDTO savedUserInfo = userInfoService.saveUserInfo(userInfoDTO);
-        return ResponseEntity.ok(savedUserInfo);
-    }
-
-    @GetMapping
-    public ResponseEntity<List<UserInfoDTO>> getAllUserInfos() {
-        List<UserInfoDTO> userInfos = userInfoService.findAllUserInfos();
-        return ResponseEntity.ok(userInfos);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<UserInfoDTO> getUserInfoById(@PathVariable Long id) {
-        UserInfoDTO userInfo = userInfoService.findUserInfoById(id);
-        if (userInfo == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(userInfo);
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_MODERATOR', 'ROLE_ADMIN')")
+    public UserInfoDTO createUserInfo(@RequestBody UserInfoDTO userInfoDTO) {
+        return userInfoService.saveUserInfo(userInfoDTO);
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<UserInfoDTO> getUserInfoByUserId(@PathVariable Long userId) {
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_MODERATOR', 'ROLE_ADMIN')")
+    public UserInfoDTO getUserInfoByUserId(@PathVariable Long userId) {
         UserInfoDTO userInfo = userInfoService.findUserInfoByUserId(userId);
         if (userInfo == null) {
-            return ResponseEntity.notFound().build();
+            throw new IllegalArgumentException("UserInfo not found for user ID: " + userId);
         }
-        return ResponseEntity.ok(userInfo);
+        return userInfo;
+    }
+
+    @GetMapping("/actors")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_MODERATOR', 'ROLE_ADMIN')")
+    public List<CrewMemberDTO> getAllActors() {
+        return crewMemberService.findActors();
+    }
+
+    @GetMapping("/directors")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_MODERATOR', 'ROLE_ADMIN')")
+    public List<CrewMemberDTO> getAllDirectors() {
+        return crewMemberService.findDirectors();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserInfoDTO> updateUserInfo(@PathVariable Long id, @RequestBody UserInfoDTO userInfoDTO) {
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_MODERATOR', 'ROLE_ADMIN')")
+    public UserInfoDTO updateUserInfo(@PathVariable Long id, @RequestBody UserInfoDTO userInfoDTO) {
         userInfoDTO.setId(id);
-        UserInfoDTO updatedUserInfo = userInfoService.updateUserInfo(userInfoDTO);
-        return ResponseEntity.ok(updatedUserInfo);
+        if (userInfoService.findUserInfoById(id) == null) {
+            throw new IllegalArgumentException("UserInfo not found with ID: " + id);
+        }
+        return userInfoService.updateUserInfo(userInfoDTO);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUserInfo(@PathVariable Long id) {
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_MODERATOR', 'ROLE_ADMIN')")
+    public void deleteUserInfo(@PathVariable Long id) {
+        if (userInfoService.findUserInfoById(id) == null) {
+            throw new IllegalArgumentException("UserInfo not found with ID: " + id);
+        }
         userInfoService.deleteUserInfo(id);
-        return ResponseEntity.noContent().build();
     }
 }

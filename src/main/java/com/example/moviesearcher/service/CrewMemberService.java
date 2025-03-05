@@ -2,8 +2,10 @@ package com.example.moviesearcher.service;
 
 import com.example.moviesearcher.dto.CrewMemberDTO;
 import com.example.moviesearcher.entity.CrewMember;
-import com.example.moviesearcher.mapper.CrewMemberMapper;
+import com.example.moviesearcher.entity.CrewRole;
+import static com.example.moviesearcher.mapper.CrewMemberMapper.CREW_MEMBER_MAPPER;
 import com.example.moviesearcher.repository.CrewMemberRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,31 +13,36 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class CrewMemberService {
 
     private final CrewMemberRepository crewMemberRepository;
 
-    public CrewMemberService(CrewMemberRepository crewMemberRepository) {
-        this.crewMemberRepository = crewMemberRepository;
-    }
-
     @Transactional
     public CrewMemberDTO saveCrewMember(CrewMemberDTO crewMemberDTO) {
-        CrewMember crewMember = CrewMemberMapper.INSTANCE.crewMemberDTOToCrewMember(crewMemberDTO);
+        CrewMember crewMember = CREW_MEMBER_MAPPER.crewMemberDTOToCrewMember(crewMemberDTO);
         crewMember = crewMemberRepository.save(crewMember);
-        return CrewMemberMapper.INSTANCE.crewMemberToCrewMemberDTO(crewMember);
-    }
-
-    public List<CrewMemberDTO> findAllCrewMembers() {
-        return crewMemberRepository.findAll().stream()
-                .map(CrewMemberMapper.INSTANCE::crewMemberToCrewMemberDTO)
-                .collect(Collectors.toList());
+        return CREW_MEMBER_MAPPER.crewMemberToCrewMemberDTO(crewMember);
     }
 
     public CrewMemberDTO findCrewMemberById(Long id) {
         return crewMemberRepository.findById(id)
-                .map(CrewMemberMapper.INSTANCE::crewMemberToCrewMemberDTO)
+                .map(CREW_MEMBER_MAPPER::crewMemberToCrewMemberDTO)
                 .orElse(null);
+    }
+
+    public List<CrewMemberDTO> findCrewMembersByRole(CrewRole role) {
+        return crewMemberRepository.findByRolesContaining(role).stream()
+                .map(CREW_MEMBER_MAPPER::crewMemberToCrewMemberDTO)
+                .collect(Collectors.toList());
+    }
+
+    public List<CrewMemberDTO> findActors() {
+        return findCrewMembersByRole(CrewRole.ACTOR);
+    }
+
+    public List<CrewMemberDTO> findDirectors() {
+        return findCrewMembersByRole(CrewRole.DIRECTOR);
     }
 
     @Transactional
@@ -45,8 +52,8 @@ public class CrewMemberService {
 
     @Transactional
     public CrewMemberDTO updateCrewMember(CrewMemberDTO crewMemberDTO) {
-        CrewMember crewMember = CrewMemberMapper.INSTANCE.crewMemberDTOToCrewMember(crewMemberDTO);
+        CrewMember crewMember = CREW_MEMBER_MAPPER.crewMemberDTOToCrewMember(crewMemberDTO);
         crewMember = crewMemberRepository.save(crewMember);
-        return CrewMemberMapper.INSTANCE.crewMemberToCrewMemberDTO(crewMember);
+        return CREW_MEMBER_MAPPER.crewMemberToCrewMemberDTO(crewMember);
     }
 }

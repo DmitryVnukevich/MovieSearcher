@@ -1,94 +1,59 @@
-/*
-package com.example.moviesearcher.controller;
-
-import com.example.moviesearcher.entity.Movie;
-import com.example.moviesearcher.service.MovieService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-
-@RestController
-@RequestMapping("/movies")
-public class MovieController {
-
-    private final MovieService movieService;
-
-    @Autowired
-    public MovieController(MovieService movieService) {
-        this.movieService = movieService;
-    }
-
-    @PostMapping
-    public Movie createMovie(@RequestBody Movie movie) {
-        return movieService.saveMovie(movie);
-    }
-
-    @GetMapping
-    public List<Movie> getAllMovies() {
-        return movieService.findAllMovies();
-    }
-
-    @GetMapping("/{id}")
-    public Movie getMovieById(@PathVariable Long id) {
-        return movieService.findMovieById(id);
-    }
-
-    @PutMapping("/{id}")
-    public Movie updateMovie(@PathVariable Long id, @RequestBody Movie movieDetails) {
-        movieDetails.setId(id);
-        return movieService.updateMovie(movieDetails);
-    }
-
-    @DeleteMapping("/{id}")
-    public void deleteMovie(@PathVariable Long id) {
-        movieService.deleteMovie(id);
-    }
-}
-*/
 package com.example.moviesearcher.controller;
 
 import com.example.moviesearcher.dto.MovieDTO;
+import com.example.moviesearcher.dto.UserInfoDTO;
 import com.example.moviesearcher.service.MovieService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/movies")
+@RequestMapping("/movie")
+@RequiredArgsConstructor
 public class MovieController {
 
     private final MovieService movieService;
 
-    @Autowired
-    public MovieController(MovieService movieService) {
-        this.movieService = movieService;
-    }
-
     @PostMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public MovieDTO createMovie(@RequestBody MovieDTO movieDTO) {
         return movieService.saveMovie(movieDTO);
     }
 
-    @GetMapping
-    public List<MovieDTO> getAllMovies() {
-        return movieService.findAllMovies();
-    }
-
     @GetMapping("/{id}")
     public MovieDTO getMovieById(@PathVariable Long id) {
-        return movieService.findMovieById(id);
+        MovieDTO movie = movieService.findMovieById(id);
+        if (movie == null) {
+            throw new IllegalArgumentException("Movie not found with ID: " + id);
+        }
+        return movie;
+    }
+
+    @GetMapping("/recommendations")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_MODERATOR', 'ROLE_ADMIN')")
+    public Page<MovieDTO> getRecommendedMovies(
+            @RequestBody UserInfoDTO userInfoDTO,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "7") int size) {
+        return movieService.findMoviesByPreferences(userInfoDTO, page, size);
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public MovieDTO updateMovie(@PathVariable Long id, @RequestBody MovieDTO movieDTO) {
         movieDTO.setId(id);
         return movieService.updateMovie(movieDTO);
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void deleteMovie(@PathVariable Long id) {
+        if (movieService.findMovieById(id) == null) {
+            throw new IllegalArgumentException("Movie not found with ID: " + id);
+        }
         movieService.deleteMovie(id);
     }
 }

@@ -35,22 +35,21 @@ public class Movie {
     @Column(name = "poster_url", nullable = false)
     private String posterUrl;
 
-    @OneToMany(mappedBy = "movie")
-    private List<Comment> comments;
+    @Column(name = "age_rating", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private AgeRating ageRating;
 
-    @ManyToMany
-    @JoinTable(
-            name = "movie_crew",
-            joinColumns = @JoinColumn(name = "movie_id"),
-            inverseJoinColumns = @JoinColumn(name = "crew_id")
-    )
-    private List<CrewMember> movieCrew;
+    @Column(name = "content_type", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private ContentType contentType;
 
-    @ManyToMany
-    @JoinTable(
-            name = "movie_genre",
-            joinColumns = @JoinColumn(name = "movie_id"),
-            inverseJoinColumns = @JoinColumn(name = "genre_id")
-    )
-    private List<Genre> genres;
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(name = "movie_crew", joinColumns = @JoinColumn(name = "movie_id"))
+    @Column(name = "crew_member_id")
+    private List<Long> crewMemberIds;
+
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(name = "movie_genre", joinColumns = @JoinColumn(name = "movie_id"))
+    @Column(name = "genre_id")
+    private List<Long> genreIds;
 }

@@ -28,9 +28,9 @@ public class Comment {
     @Column(name = "created_at", nullable = false)
     private Date createdAt;
 
+    @Column(name = "user_id", nullable = false)
     private Long userId;
 
-    @ManyToOne
-    @JoinColumn(name = "movie_id")
-    private Movie movie;
+    @Column(name = "movie_id", nullable = false)
+    private Long movieId;
 }

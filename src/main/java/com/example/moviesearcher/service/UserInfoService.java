@@ -3,10 +3,10 @@ package com.example.moviesearcher.service;
 import com.example.moviesearcher.dto.UserInfoDTO;
 import com.example.moviesearcher.entity.User;
 import com.example.moviesearcher.entity.UserInfo;
-import com.example.moviesearcher.mapper.UserInfoMapper;
+import static com.example.moviesearcher.mapper.UserInfoMapper.USER_INFO_MAPPER;
 import com.example.moviesearcher.repository.UserInfoRepository;
 import com.example.moviesearcher.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,41 +14,32 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class UserInfoService {
 
-    @Autowired
-    private UserInfoRepository userInfoRepository;
-
-    @Autowired
-    private UserRepository userRepository;
-
+    private final UserInfoRepository userInfoRepository;
+    private final UserRepository userRepository;
     @Transactional
     public UserInfoDTO saveUserInfo(UserInfoDTO userInfoDTO) {
         User user = userRepository.findById(userInfoDTO.getUserId())
                 .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userInfoDTO.getUserId()));
 
-        UserInfo userInfo = UserInfoMapper.INSTANCE.userInfoDTOToUserInfo(userInfoDTO);
+        UserInfo userInfo = USER_INFO_MAPPER.userInfoDTOToUserInfo(userInfoDTO);
         userInfo.setUser(user);
         userInfo = userInfoRepository.save(userInfo);
 
-        return UserInfoMapper.INSTANCE.userInfoToUserInfoDTO(userInfo);
-    }
-
-    public List<UserInfoDTO> findAllUserInfos() {
-        return userInfoRepository.findAll().stream()
-                .map(UserInfoMapper.INSTANCE::userInfoToUserInfoDTO)
-                .collect(Collectors.toList());
+        return USER_INFO_MAPPER.userInfoToUserInfoDTO(userInfo);
     }
 
     public UserInfoDTO findUserInfoById(Long id) {
         return userInfoRepository.findById(id)
-                .map(UserInfoMapper.INSTANCE::userInfoToUserInfoDTO)
+                .map(USER_INFO_MAPPER::userInfoToUserInfoDTO)
                 .orElse(null);
     }
 
     public UserInfoDTO findUserInfoByUserId(Long userId) {
         return userInfoRepository.findByUserId(userId)
-                .map(UserInfoMapper.INSTANCE::userInfoToUserInfoDTO)
+                .map(USER_INFO_MAPPER::userInfoToUserInfoDTO)
                 .orElse(null);
     }
 
@@ -57,11 +48,11 @@ public class UserInfoService {
         User user = userRepository.findById(userInfoDTO.getUserId())
                 .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userInfoDTO.getUserId()));
 
-        UserInfo userInfo = UserInfoMapper.INSTANCE.userInfoDTOToUserInfo(userInfoDTO);
+        UserInfo userInfo = USER_INFO_MAPPER.userInfoDTOToUserInfo(userInfoDTO);
         userInfo.setUser(user);
         userInfo = userInfoRepository.save(userInfo);
 
-        return UserInfoMapper.INSTANCE.userInfoToUserInfoDTO(userInfo);
+        return USER_INFO_MAPPER.userInfoToUserInfoDTO(userInfo);
     }
 
     @Transactional

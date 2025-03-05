@@ -2,9 +2,9 @@ package com.example.moviesearcher.service;
 
 import com.example.moviesearcher.dto.UserDTO;
 import com.example.moviesearcher.entity.User;
-import com.example.moviesearcher.mapper.UserMapper;
+import static com.example.moviesearcher.mapper.UserMapper.USER_MAPPER;
 import com.example.moviesearcher.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -16,36 +16,31 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private JWTService jwtService;
-
-    @Autowired
-    private AuthenticationManager authenticationManager;
-
+    private final UserRepository userRepository;
+    private final JWTService jwtService;
+    private final AuthenticationManager authenticationManager;
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
     @Transactional
     public UserDTO saveUser(UserDTO userDTO) {
         userDTO.setPassword(encoder.encode(userDTO.getPassword()));
-        User user = UserMapper.INSTANCE.userDTOToUser(userDTO);
+        User user = USER_MAPPER.userDTOToUser(userDTO);
         user = userRepository.save(user);
-        return UserMapper.INSTANCE.userToUserDTO(user);
+        return USER_MAPPER.userToUserDTO(user);
     }
 
     public List<UserDTO> findAllUsers() {
         return userRepository.findAll().stream()
-                .map(UserMapper.INSTANCE::userToUserDTO)
+                .map(USER_MAPPER::userToUserDTO)
                 .collect(Collectors.toList());
     }
 
     public UserDTO findUserById(Long id) {
         return userRepository.findById(id)
-                .map(UserMapper.INSTANCE::userToUserDTO)
+                .map(USER_MAPPER::userToUserDTO)
                 .orElse(null);
     }
 
@@ -56,9 +51,9 @@ public class UserService {
 
     @Transactional
     public UserDTO updateUser(UserDTO userDTO) {
-        User user = UserMapper.INSTANCE.userDTOToUser(userDTO);
+        User user = USER_MAPPER.userDTOToUser(userDTO);
         user = userRepository.save(user);
-        return UserMapper.INSTANCE.userToUserDTO(user);
+        return USER_MAPPER.userToUserDTO(user);
     }
 
     public String verifyUser(UserDTO userDTO) {

@@ -1,94 +1,44 @@
-/*
-package com.example.moviesearcher.controller;
-
-import com.example.moviesearcher.entity.Comment;
-import com.example.moviesearcher.service.CommentService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-
-@RestController
-@RequestMapping("/comments")
-public class CommentController {
-
-    private final CommentService commentService;
-
-    @Autowired
-    public CommentController(CommentService commentService) {
-        this.commentService = commentService;
-    }
-
-    @PostMapping
-    public Comment createComment(@RequestBody Comment comment) {
-        return commentService.saveComment(comment);
-    }
-
-    @GetMapping
-    public List<Comment> getAllComments() {
-        return commentService.findAllComments();
-    }
-
-    @GetMapping("/{id}")
-    public Comment getCommentById(@PathVariable Long id) {
-        return commentService.findCommentById(id);
-    }
-
-    @PutMapping("/{id}")
-    public Comment updateComment(@PathVariable Long id, @RequestBody Comment commentDetails) {
-        commentDetails.setId(id);
-        return commentService.updateComment(commentDetails);
-    }
-
-    @DeleteMapping("/{id}")
-    public void deleteComment(@PathVariable Long id) {
-        commentService.deleteComment(id);
-    }
-}
-*/
 package com.example.moviesearcher.controller;
 
 import com.example.moviesearcher.dto.CommentDTO;
 import com.example.moviesearcher.service.CommentService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/comments")
+@RequestMapping("/comment")
+@RequiredArgsConstructor
 public class CommentController {
 
     private final CommentService commentService;
 
-    @Autowired
-    public CommentController(CommentService commentService) {
-        this.commentService = commentService;
-    }
-
     @PostMapping
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_MODERATOR', 'ROLE_ADMIN')")
     public CommentDTO createComment(@RequestBody CommentDTO commentDTO) {
         return commentService.saveComment(commentDTO);
     }
 
     @GetMapping
-    public List<CommentDTO> getAllComments() {
-        return commentService.findAllComments();
-    }
-
-    @GetMapping("/{id}")
-    public CommentDTO getCommentById(@PathVariable Long id) {
-        return commentService.findCommentById(id);
+    public List<CommentDTO> findCommentsByMovieId(@PathVariable Long id) {
+        return commentService.findCommentsByMovieId(id);
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_USER')")
     public CommentDTO updateComment(@PathVariable Long id, @RequestBody CommentDTO commentDTO) {
         commentDTO.setId(id);
         return commentService.updateComment(commentDTO);
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_MODERATOR', 'ROLE_ADMIN')")
     public void deleteComment(@PathVariable Long id) {
+        if (commentService.findCommentById(id) == null) {
+            throw new IllegalArgumentException("Comment not found with ID: " + id);
+        }
         commentService.deleteComment(id);
     }
 }

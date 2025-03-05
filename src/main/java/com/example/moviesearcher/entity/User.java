@@ -27,27 +27,11 @@ public class User {
 
     private String password;
 
-    /*@ManyToOne
-    @JoinColumn(name = "role_id")
-    private Role role;*/
-
-    @ElementCollection(targetClass = UserRole.class)
-    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
+    @ElementCollection
     @Enumerated(EnumType.STRING)
-    @Column(name = "role")
+    @Column(nullable = false)
     private List<UserRole> roles;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private UserInfo userInfo;
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", roles=" + roles +
-                '}';
-    }
 }

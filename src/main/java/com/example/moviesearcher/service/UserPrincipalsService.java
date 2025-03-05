@@ -3,18 +3,18 @@ package com.example.moviesearcher.service;
 import com.example.moviesearcher.config.UserPrincipals;
 import com.example.moviesearcher.entity.User;
 import com.example.moviesearcher.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@RequiredArgsConstructor
 @Service
 public class UserPrincipalsService implements UserDetailsService {
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Override
     @Transactional

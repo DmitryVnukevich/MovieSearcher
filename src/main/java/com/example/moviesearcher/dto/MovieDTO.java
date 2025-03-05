@@ -1,5 +1,7 @@
 package com.example.moviesearcher.dto;
 
+import com.example.moviesearcher.entity.AgeRating;
+import com.example.moviesearcher.entity.ContentType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,9 +37,13 @@ public class MovieDTO {
     @NotBlank(message = "Photo URL is mandatory")
     private String posterUrl;
 
-    private List<CommentDTO> comments;
+    @NotNull(message = "Age rating is mandatory")
+    private AgeRating ageRating;
 
-    private List<CrewMemberDTO> movieCrew;
+    @NotNull(message = "Content type is mandatory")
+    private ContentType contentType;
 
-    private List<GenreDTO> genres;
+    private List<Long> crewMemberIds;
+
+    private List<Long> genreIds;
 }

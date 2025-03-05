@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -20,19 +22,29 @@ public class UserInfoDTO {
     @NotNull(message = "User ID is mandatory")
     private Long userId;
 
-    private List<GenreDTO> preferredGenres;
+    private List<Long> preferredGenreIds;
 
-    private List<CrewMemberDTO> favoriteActors;
+    private List<Long> favoriteActorIds;
 
-    private List<CrewMemberDTO> favoriteDirectors;
-
-    private List<String> preferredCountries;
+    private List<Long> favoriteDirectorIds;
 
     private ContentType contentTypePreference;
 
-    private String preferredRatingRange;
+    @Min(value = 1, message = "Minimum rating must be at least 1")
+    @Max(value = 10, message = "Minimum rating cannot exceed 10")
+    private Integer minRating;
 
-    private String preferredDurationRange;
+    @Min(value = 1, message = "Maximum rating must be at least 1")
+    @Max(value = 10, message = "Maximum rating cannot exceed 10")
+    private Integer maxRating;
+
+    @Min(value = 1, message = "Minimum duration must be at least 1 minute")
+    @Max(value = 32767, message = "Minimum duration cannot exceed 32767 minutes")
+    private Short minDuration;
+
+    @Min(value = 1, message = "Maximum duration must be at least 1 minute")
+    @Max(value = 32767, message = "Maximum duration cannot exceed 32767 minutes")
+    private Short maxDuration;
 
     private AgeRating preferredAgeRating;
 }
