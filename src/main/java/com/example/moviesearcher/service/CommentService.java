@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,21 +25,19 @@ public class CommentService {
     public CommentDTO saveComment(CommentDTO commentDTO) {
         movieRepository.findById(commentDTO.getMovieId())
                 .orElseThrow(() -> new IllegalArgumentException("Movie not found with ID: " + commentDTO.getMovieId()));
+        userRepository.findById(commentDTO.getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + commentDTO.getUserId()));
+
+        if (commentDTO.getCreatedAt() == null) {
+            commentDTO.setCreatedAt(new Date());
+        }
 
         Comment comment = COMMENT_MAPPER.commentDTOToComment(commentDTO);
         comment = commentRepository.save(comment);
-
         CommentDTO result = COMMENT_MAPPER.commentToCommentDTO(comment);
         userRepository.findById(comment.getUserId())
                 .ifPresent(user -> result.setUsername(user.getUsername()));
-
         return result;
-    }
-
-    public CommentDTO findCommentById(Long id) {
-        return commentRepository.findById(id)
-                .map(this::enrichCommentDTOWithUsername)
-                .orElse(null);
     }
 
     public List<CommentDTO> findCommentsByMovieId(Long movieId) {
@@ -49,18 +48,44 @@ public class CommentService {
 
     @Transactional
     public void deleteComment(Long id) {
+        if (!commentRepository.existsById(id)) {
+            throw new IllegalArgumentException("Comment not found with ID: " + id);
+        }
         commentRepository.deleteById(id);
     }
 
     @Transactional
     public CommentDTO updateComment(CommentDTO commentDTO) {
-        movieRepository.findById(commentDTO.getMovieId())
-                .orElseThrow(() -> new IllegalArgumentException("Movie not found with ID: " + commentDTO.getMovieId()));
+        Comment commentFromDb = commentRepository.findById(commentDTO.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Comment not found with ID: " + commentDTO.getId()));
 
-        Comment comment = COMMENT_MAPPER.commentDTOToComment(commentDTO);
-        comment = commentRepository.save(comment);
+        if (commentDTO.getMovieId() != null) {
+            movieRepository.findById(commentDTO.getMovieId())
+                    .orElseThrow(() -> new IllegalArgumentException("Movie not found with ID: " + commentDTO.getMovieId()));
+        }
+        if (commentDTO.getUserId() != null) {
+            userRepository.findById(commentDTO.getUserId())
+                    .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + commentDTO.getMovieId()));
+        }
 
-        return enrichCommentDTOWithUsername(comment);
+        if (commentDTO.getRating() != null) {
+            commentFromDb.setRating(commentDTO.getRating());
+        }
+        if (commentDTO.getReview() != null) {
+            commentFromDb.setReview(commentDTO.getReview());
+        }
+        if (commentDTO.getCreatedAt() != null) {
+            commentFromDb.setCreatedAt(commentDTO.getCreatedAt());
+        }
+        if (commentDTO.getUserId() != null) {
+            commentFromDb.setUserId(commentDTO.getUserId());
+        }
+        if (commentDTO.getMovieId() != null) {
+            commentFromDb.setMovieId(commentDTO.getMovieId());
+        }
+
+        commentFromDb = commentRepository.save(commentFromDb);
+        return enrichCommentDTOWithUsername(commentFromDb);
     }
 
     private CommentDTO enrichCommentDTOWithUsername(Comment comment) {

@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -17,7 +18,7 @@ public class CommentController {
 
     @PostMapping
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_MODERATOR', 'ROLE_ADMIN')")
-    public CommentDTO createComment(@RequestBody CommentDTO commentDTO) {
+    public CommentDTO createComment(@Valid @RequestBody CommentDTO commentDTO) {
         return commentService.saveComment(commentDTO);
     }
 
@@ -28,7 +29,7 @@ public class CommentController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('ROLE_USER')")
-    public CommentDTO updateComment(@PathVariable Long id, @RequestBody CommentDTO commentDTO) {
+    public CommentDTO updateComment(@PathVariable Long id, @Valid @RequestBody CommentDTO commentDTO) {
         commentDTO.setId(id);
         return commentService.updateComment(commentDTO);
     }
@@ -36,9 +37,6 @@ public class CommentController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyRole('ROLE_MODERATOR', 'ROLE_ADMIN')")
     public void deleteComment(@PathVariable Long id) {
-        if (commentService.findCommentById(id) == null) {
-            throw new IllegalArgumentException("Comment not found with ID: " + id);
-        }
         commentService.deleteComment(id);
     }
 }

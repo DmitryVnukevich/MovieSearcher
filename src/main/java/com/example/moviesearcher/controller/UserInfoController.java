@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -20,7 +21,7 @@ public class UserInfoController {
 
     @PostMapping
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_MODERATOR', 'ROLE_ADMIN')")
-    public UserInfoDTO createUserInfo(@RequestBody UserInfoDTO userInfoDTO) {
+    public UserInfoDTO createUserInfo(@Valid @RequestBody UserInfoDTO userInfoDTO) {
         return userInfoService.saveUserInfo(userInfoDTO);
     }
 
@@ -28,9 +29,6 @@ public class UserInfoController {
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_MODERATOR', 'ROLE_ADMIN')")
     public UserInfoDTO getUserInfoByUserId(@PathVariable Long userId) {
         UserInfoDTO userInfo = userInfoService.findUserInfoByUserId(userId);
-        if (userInfo == null) {
-            throw new IllegalArgumentException("UserInfo not found for user ID: " + userId);
-        }
         return userInfo;
     }
 
@@ -48,20 +46,14 @@ public class UserInfoController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_MODERATOR', 'ROLE_ADMIN')")
-    public UserInfoDTO updateUserInfo(@PathVariable Long id, @RequestBody UserInfoDTO userInfoDTO) {
+    public UserInfoDTO updateUserInfo(@PathVariable Long id, @Valid @RequestBody UserInfoDTO userInfoDTO) {
         userInfoDTO.setId(id);
-        if (userInfoService.findUserInfoById(id) == null) {
-            throw new IllegalArgumentException("UserInfo not found with ID: " + id);
-        }
         return userInfoService.updateUserInfo(userInfoDTO);
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_MODERATOR', 'ROLE_ADMIN')")
     public void deleteUserInfo(@PathVariable Long id) {
-        if (userInfoService.findUserInfoById(id) == null) {
-            throw new IllegalArgumentException("UserInfo not found with ID: " + id);
-        }
         userInfoService.deleteUserInfo(id);
     }
 }

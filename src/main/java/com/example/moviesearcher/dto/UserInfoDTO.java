@@ -32,11 +32,11 @@ public class UserInfoDTO {
 
     @Min(value = 1, message = "Minimum rating must be at least 1")
     @Max(value = 10, message = "Minimum rating cannot exceed 10")
-    private Integer minRating;
+    private Byte minRating;
 
     @Min(value = 1, message = "Maximum rating must be at least 1")
     @Max(value = 10, message = "Maximum rating cannot exceed 10")
-    private Integer maxRating;
+    private Byte maxRating;
 
     @Min(value = 1, message = "Minimum duration must be at least 1 minute")
     @Max(value = 32767, message = "Minimum duration cannot exceed 32767 minutes")

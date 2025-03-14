@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 import java.util.List;
@@ -20,18 +21,20 @@ public class CrewMember {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "firstname", nullable = false)
+    @Column(name = "firstname", nullable = false, length = 50)
     private String firstName;
 
-    @Column(name = "lastname", nullable = false)
+    @Column(name = "lastname", nullable = false, length = 50)
     private String lastName;
 
     @ElementCollection
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private List<CrewRole> roles;
 
     @Column(name = "birth_date", nullable = false)
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
     private Date birthDate;
 
     @Column(nullable = false)

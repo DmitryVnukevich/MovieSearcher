@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -17,7 +18,7 @@ public class GenreController {
 
     @PostMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public GenreDTO createGenre(@RequestBody GenreDTO genreDTO) {
+    public GenreDTO createGenre(@Valid @RequestBody GenreDTO genreDTO) {
         return genreService.saveGenre(genreDTO);
     }
 
@@ -28,7 +29,7 @@ public class GenreController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public GenreDTO updateGenre(@PathVariable Long id, @RequestBody GenreDTO genreDTO) {
+    public GenreDTO updateGenre(@PathVariable Long id, @Valid @RequestBody GenreDTO genreDTO) {
         genreDTO.setId(id);
         return genreService.updateGenre(genreDTO);
     }
@@ -36,9 +37,6 @@ public class GenreController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void deleteGenre(@PathVariable Long id) {
-        if (genreService.findGenreById(id) == null) {
-            throw new IllegalArgumentException("Genre not found with ID: " + id);
-        }
         genreService.deleteGenre(id);
     }
 }

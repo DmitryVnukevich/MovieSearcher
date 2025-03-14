@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -17,22 +18,19 @@ public class CrewMemberController {
 
     @PostMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public CrewMemberDTO createCrewMember(@RequestBody CrewMemberDTO crewMemberDTO) {
+    public CrewMemberDTO createCrewMember(@Valid @RequestBody CrewMemberDTO crewMemberDTO) {
         return crewMemberService.saveCrewMember(crewMemberDTO);
     }
 
     @GetMapping("/{id}")
     public CrewMemberDTO getCrewMemberById(@PathVariable Long id) {
         CrewMemberDTO crewMember = crewMemberService.findCrewMemberById(id);
-        if (crewMember == null) {
-            throw new IllegalArgumentException("Crew member not found with ID: " + id);
-        }
         return crewMember;
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public CrewMemberDTO updateCrewMember(@PathVariable Long id, @RequestBody CrewMemberDTO crewMemberDTO) {
+    public CrewMemberDTO updateCrewMember(@PathVariable Long id, @Valid @RequestBody CrewMemberDTO crewMemberDTO) {
         crewMemberDTO.setId(id);
         return crewMemberService.updateCrewMember(crewMemberDTO);
     }
@@ -40,9 +38,6 @@ public class CrewMemberController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void deleteCrewMember(@PathVariable Long id) {
-        if (crewMemberService.findCrewMemberById(id) == null) {
-            throw new IllegalArgumentException("Crew member not found with ID: " + id);
-        }
         crewMemberService.deleteCrewMember(id);
     }
 }

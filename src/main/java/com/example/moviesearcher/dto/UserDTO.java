@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.List;
 
@@ -31,6 +32,7 @@ public class UserDTO {
     @Size(min = 6, max = 20, message = "Password must be between 3 and 20 characters")
     private String password;
 
+    @NotEmpty(message = "Roles cannot be empty")
     private List<UserRole> roles;
 }
 

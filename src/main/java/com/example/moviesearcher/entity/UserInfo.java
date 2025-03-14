@@ -43,10 +43,10 @@ public class UserInfo {
     private ContentType contentTypePreference;
 
     @Column(name = "min_rating")
-    private Integer minRating;
+    private Byte minRating;
 
     @Column(name = "max_rating")
-    private Integer maxRating;
+    private Byte maxRating;
 
     @Column(name = "min_duration")
     private Short minDuration;

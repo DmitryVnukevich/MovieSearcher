@@ -47,13 +47,37 @@ public class CrewMemberService {
 
     @Transactional
     public void deleteCrewMember(Long id) {
+        if (!crewMemberRepository.existsById(id)) {
+            throw new IllegalArgumentException("Crew member not found with ID: " + id);
+        }
         crewMemberRepository.deleteById(id);
     }
 
     @Transactional
     public CrewMemberDTO updateCrewMember(CrewMemberDTO crewMemberDTO) {
-        CrewMember crewMember = CREW_MEMBER_MAPPER.crewMemberDTOToCrewMember(crewMemberDTO);
-        crewMember = crewMemberRepository.save(crewMember);
-        return CREW_MEMBER_MAPPER.crewMemberToCrewMemberDTO(crewMember);
+        CrewMember crewMemberFromDb = crewMemberRepository.findById(crewMemberDTO.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Crew member not found with ID: " + crewMemberDTO.getId()));
+
+        if (crewMemberDTO.getFirstName() != null) {
+            crewMemberFromDb.setFirstName(crewMemberDTO.getFirstName());
+        }
+        if (crewMemberDTO.getLastName() != null) {
+            crewMemberFromDb.setLastName(crewMemberDTO.getLastName());
+        }
+        if (crewMemberDTO.getRoles() != null) {
+            crewMemberFromDb.setRoles(crewMemberDTO.getRoles());
+        }
+        if (crewMemberDTO.getBirthDate() != null) {
+            crewMemberFromDb.setBirthDate(crewMemberDTO.getBirthDate());
+        }
+        if (crewMemberDTO.getBio() != null) {
+            crewMemberFromDb.setBio(crewMemberDTO.getBio());
+        }
+        if (crewMemberDTO.getPhotoUrl() != null) {
+            crewMemberFromDb.setPhotoUrl(crewMemberDTO.getPhotoUrl());
+        }
+
+        crewMemberFromDb = crewMemberRepository.save(crewMemberFromDb);
+        return CREW_MEMBER_MAPPER.crewMemberToCrewMemberDTO(crewMemberFromDb);
     }
 }

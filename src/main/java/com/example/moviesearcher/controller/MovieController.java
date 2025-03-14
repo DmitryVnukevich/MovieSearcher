@@ -8,7 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/movie")
@@ -19,22 +19,19 @@ public class MovieController {
 
     @PostMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public MovieDTO createMovie(@RequestBody MovieDTO movieDTO) {
+    public MovieDTO createMovie(@Valid @RequestBody MovieDTO movieDTO) {
         return movieService.saveMovie(movieDTO);
     }
 
     @GetMapping("/{id}")
     public MovieDTO getMovieById(@PathVariable Long id) {
         MovieDTO movie = movieService.findMovieById(id);
-        if (movie == null) {
-            throw new IllegalArgumentException("Movie not found with ID: " + id);
-        }
         return movie;
     }
 
-    @GetMapping("/recommendations")
+    @PostMapping("/by-preferences")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_MODERATOR', 'ROLE_ADMIN')")
-    public Page<MovieDTO> getRecommendedMovies(
+    public Page<MovieDTO> getMoviesByPreferences(
             @RequestBody UserInfoDTO userInfoDTO,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "7") int size) {
@@ -43,7 +40,7 @@ public class MovieController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public MovieDTO updateMovie(@PathVariable Long id, @RequestBody MovieDTO movieDTO) {
+    public MovieDTO updateMovie(@PathVariable Long id, @Valid @RequestBody MovieDTO movieDTO) {
         movieDTO.setId(id);
         return movieService.updateMovie(movieDTO);
     }
@@ -51,9 +48,6 @@ public class MovieController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void deleteMovie(@PathVariable Long id) {
-        if (movieService.findMovieById(id) == null) {
-            throw new IllegalArgumentException("Movie not found with ID: " + id);
-        }
         movieService.deleteMovie(id);
     }
 }

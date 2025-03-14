@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -20,12 +21,14 @@ public class Comment {
     private Long id;
 
     @Column(nullable = false)
-    private Integer rating;
+    private Byte rating;
 
     @Column(nullable = false)
     private String review;
 
     @Column(name = "created_at", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm")
     private Date createdAt;
 
     @Column(name = "user_id", nullable = false)

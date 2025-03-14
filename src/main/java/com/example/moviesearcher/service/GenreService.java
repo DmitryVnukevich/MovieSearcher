@@ -19,6 +19,10 @@ public class GenreService {
 
     @Transactional
     public GenreDTO saveGenre(GenreDTO genreDTO) {
+        if (genreRepository.findByName(genreDTO.getName()).isPresent()) {
+            throw new IllegalArgumentException("Genre with name '" + genreDTO.getName() + "' already exists");
+        }
+
         Genre genre = GENRE_MAPPER.genreDTOToGenre(genreDTO);
         genre = genreRepository.save(genre);
         return GENRE_MAPPER.genreToGenreDTO(genre);
@@ -44,13 +48,25 @@ public class GenreService {
 
     @Transactional
     public void deleteGenre(Long id) {
+        if (!genreRepository.existsById(id)) {
+            throw new IllegalArgumentException("Genre not found with ID: " + id);
+        }
         genreRepository.deleteById(id);
     }
 
     @Transactional
     public GenreDTO updateGenre(GenreDTO genreDTO) {
-        Genre genre = GENRE_MAPPER.genreDTOToGenre(genreDTO);
-        genre = genreRepository.save(genre);
-        return GENRE_MAPPER.genreToGenreDTO(genre);
+        Genre genreFromDb = genreRepository.findById(genreDTO.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Genre not found with ID: " + genreDTO.getId()));
+
+        if (genreDTO.getName() != null && !genreDTO.getName().equals(genreFromDb.getName())) {
+            if (genreRepository.findByName(genreDTO.getName()).isPresent()) {
+                throw new IllegalArgumentException("Genre with name '" + genreDTO.getName() + "' already exists");
+            }
+            genreFromDb.setName(genreDTO.getName());
+        }
+
+        genreFromDb = genreRepository.save(genreFromDb);
+        return GENRE_MAPPER.genreToGenreDTO(genreFromDb);
     }
 }

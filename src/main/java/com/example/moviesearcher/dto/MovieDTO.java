@@ -2,10 +2,12 @@ package com.example.moviesearcher.dto;
 
 import com.example.moviesearcher.entity.AgeRating;
 import com.example.moviesearcher.entity.ContentType;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.*;
 import java.util.Date;
@@ -27,6 +29,8 @@ public class MovieDTO {
     private String description;
 
     @NotNull(message = "Release date cannot be null")
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
+    @JsonFormat(pattern = "dd-MM-yyyy")
     private Date releaseDate;
 
     @NotNull(message = "Duration cannot be null")
