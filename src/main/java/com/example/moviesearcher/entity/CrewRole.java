@@ -1,5 +1,8 @@
 package com.example.moviesearcher.entity;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum CrewRole {
     DIRECTOR,                // Режиссер
     ACTOR,                   // Актер
@@ -20,5 +23,15 @@ public enum CrewRole {
     ANIMATOR,                // Аниматор
     VOICE_ACTOR,             // Актер озвучки
     PUPPETEER,               // Кукловод
-    ANIMAL_TRAINER           // Дрессировщик животных
+    ANIMAL_TRAINER;           // Дрессировщик животных
+
+    @JsonCreator
+    public static CrewRole fromValue(String value) {
+        return valueOf(value.toUpperCase());
+    }
+
+    @JsonValue
+    public String toValue() {
+        return name();
+    }
 }

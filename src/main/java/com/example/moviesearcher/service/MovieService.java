@@ -4,13 +4,15 @@ import com.example.moviesearcher.dto.MovieDTO;
 import com.example.moviesearcher.dto.UserInfoDTO;
 import com.example.moviesearcher.entity.Movie;
 import static com.example.moviesearcher.mapper.MovieMapper.MOVIE_MAPPER;
-import com.example.moviesearcher.repository.CrewMemberRepository;
-import com.example.moviesearcher.repository.GenreRepository;
-import com.example.moviesearcher.repository.MovieRepository;
+import static com.example.moviesearcher.mapper.UserInfoMapper.USER_INFO_MAPPER;
+
+import com.example.moviesearcher.entity.UserInfo;
+import com.example.moviesearcher.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedModel;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +25,7 @@ public class MovieService {
     private final MovieRepository movieRepository;
     private final CrewMemberRepository crewMemberRepository;
     private final GenreRepository genreRepository;
+    private final UserInfoRepository userInfoRepository;
 
     @Transactional
     public MovieDTO saveMovie(MovieDTO movieDTO) {
@@ -40,10 +43,17 @@ public class MovieService {
                 .orElse(null);
     }
 
-    public Page<MovieDTO> findMoviesByPreferences(UserInfoDTO userInfoDTO, int page, int size) {
+    public PagedModel<MovieDTO> findMoviesByPreferences(Long userId, int page, int size) {
+        UserInfo userInfo = userInfoRepository.findByUserId(userId)
+                .orElseThrow(() -> new IllegalArgumentException("UserInfo not found for user ID: " + userId));
+
+        UserInfoDTO userInfoDTO = USER_INFO_MAPPER.userInfoToUserInfoDTO(userInfo);
+
         Pageable pageable = PageRequest.of(page, size);
-        return movieRepository.findMoviesByPreferences(userInfoDTO, pageable)
-                .map(MOVIE_MAPPER::movieToMovieDTO);
+        Page<Movie> moviePage = movieRepository.findMoviesByPreferences(userInfoDTO, pageable);
+        Page<MovieDTO> movieDTOPage = moviePage.map(MOVIE_MAPPER::movieToMovieDTO);
+
+        return new PagedModel<>(movieDTOPage);
     }
 
     @Transactional

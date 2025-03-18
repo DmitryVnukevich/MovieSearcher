@@ -46,7 +46,8 @@ public class Movie {
     @Enumerated(EnumType.STRING)
     private ContentType contentType;
 
-    @ElementCollection(fetch = FetchType.LAZY)
+    //@ElementCollection(fetch = FetchType.LAZY)
+    @ElementCollection()
     @CollectionTable(name = "movie_crew", joinColumns = @JoinColumn(name = "movie_id"))
     @Column(name = "crew_member_id")
     private List<Long> crewMemberIds;

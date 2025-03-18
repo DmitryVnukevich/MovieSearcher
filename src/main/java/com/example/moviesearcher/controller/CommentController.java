@@ -22,7 +22,7 @@ public class CommentController {
         return commentService.saveComment(commentDTO);
     }
 
-    @GetMapping
+    @GetMapping("/{id}")
     public List<CommentDTO> findCommentsByMovieId(@PathVariable Long id) {
         return commentService.findCommentsByMovieId(id);
     }
