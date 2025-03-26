@@ -10,18 +10,18 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/auth")
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
 
-    @PostMapping("/register")
+    @PostMapping("/sign-up")
     public UserDTO register(@Valid @RequestBody UserDTO userDTO) {
         return userService.saveUser(userDTO);
     }
 
-    @PostMapping("/login")
+    @PostMapping("/sign-in")
     public String login(@Valid @RequestBody UserDTO userDTO) {
         return userService.verifyUser(userDTO);
     }
