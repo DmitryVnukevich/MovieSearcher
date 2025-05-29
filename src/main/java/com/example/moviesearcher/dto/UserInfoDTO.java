@@ -22,7 +22,7 @@ public class UserInfoDTO {
     @NotNull(message = "User ID is mandatory")
     private Long userId;
 
-    private List<Long> preferredGenreIds;
+    private List<Byte> preferredGenreIds;
 
     private List<Long> favoriteActorIds;
 

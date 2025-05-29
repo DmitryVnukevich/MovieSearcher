@@ -1,11 +1,19 @@
 package com.example.moviesearcher.service;
 
 import com.example.moviesearcher.dto.CrewMemberDTO;
+import com.example.moviesearcher.dto.UserDTO;
 import com.example.moviesearcher.entity.CrewMember;
 import com.example.moviesearcher.entity.CrewRole;
 import static com.example.moviesearcher.mapper.CrewMemberMapper.CREW_MEMBER_MAPPER;
+import static com.example.moviesearcher.mapper.UserMapper.USER_MAPPER;
+
+import com.example.moviesearcher.entity.User;
 import com.example.moviesearcher.repository.CrewMemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedModel;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +31,19 @@ public class CrewMemberService {
         CrewMember crewMember = CREW_MEMBER_MAPPER.crewMemberDTOToCrewMember(crewMemberDTO);
         crewMember = crewMemberRepository.save(crewMember);
         return CREW_MEMBER_MAPPER.crewMemberToCrewMemberDTO(crewMember);
+    }
+
+    public List<CrewMemberDTO> findAllCrewMembers() {
+        return crewMemberRepository.findAll().stream()
+                .map(CREW_MEMBER_MAPPER::crewMemberToCrewMemberDTO)
+                .collect(Collectors.toList());
+    }
+
+    public PagedModel<CrewMemberDTO> findAllCrewMembers(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<CrewMember> crewMemberPage = crewMemberRepository.findAll(pageable);
+        Page<CrewMemberDTO> crewMemberDTOPage = crewMemberPage.map(CREW_MEMBER_MAPPER::crewMemberToCrewMemberDTO);
+        return new PagedModel<>(crewMemberDTOPage);
     }
 
     public CrewMemberDTO findCrewMemberById(Long id) {
@@ -73,8 +94,8 @@ public class CrewMemberService {
         if (crewMemberDTO.getBio() != null) {
             crewMemberFromDb.setBio(crewMemberDTO.getBio());
         }
-        if (crewMemberDTO.getPhotoUrl() != null) {
-            crewMemberFromDb.setPhotoUrl(crewMemberDTO.getPhotoUrl());
+        if (crewMemberDTO.getPhoto() != null) {
+            crewMemberFromDb.setPhoto(crewMemberDTO.getPhoto());
         }
 
         crewMemberFromDb = crewMemberRepository.save(crewMemberFromDb);

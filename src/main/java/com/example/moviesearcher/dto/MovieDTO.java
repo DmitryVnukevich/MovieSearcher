@@ -29,8 +29,8 @@ public class MovieDTO {
     private String description;
 
     @NotNull(message = "Release date cannot be null")
-    @DateTimeFormat(pattern = "dd-MM-yyyy")
-    @JsonFormat(pattern = "dd-MM-yyyy")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date releaseDate;
 
     @NotNull(message = "Duration cannot be null")
@@ -38,8 +38,9 @@ public class MovieDTO {
     @Max(value = 32767, message = "Movie duration cannot exceed 32767 minutes")
     private Short duration;
 
-    @NotBlank(message = "Photo URL is mandatory")
-    private String posterUrl;
+    @NotBlank(message = "Poster is mandatory")
+    @Pattern(regexp = "^data:image/(jpeg|png);base64,[A-Za-z0-9+/=]+$", message = "Poster must be a valid Base64 image")
+    private String poster;
 
     @NotNull(message = "Age rating is mandatory")
     private AgeRating ageRating;
@@ -47,7 +48,9 @@ public class MovieDTO {
     @NotNull(message = "Content type is mandatory")
     private ContentType contentType;
 
+    private Float averageRating;
+
     private List<Long> crewMemberIds;
 
-    private List<Long> genreIds;
+    private List<Byte> genreIds;
 }

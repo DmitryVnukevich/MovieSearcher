@@ -51,9 +51,9 @@ public class UserInfoController {
         return userInfoService.updateUserInfo(userInfoDTO);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/user/{userId}")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_MODERATOR', 'ROLE_ADMIN')")
-    public void deleteUserInfo(@PathVariable Long id) {
-        userInfoService.deleteUserInfo(id);
+    public void deleteUserInfoByUserId(@PathVariable Long userId) {
+        userInfoService.deleteUserInfoByUserId(userId);
     }
 }

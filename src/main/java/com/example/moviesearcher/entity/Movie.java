@@ -29,14 +29,14 @@ public class Movie {
 
     @Column(name = "release_date", nullable = false)
     @Temporal(TemporalType.DATE)
-    @DateTimeFormat(pattern = "dd-MM-yyyy")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date releaseDate;
 
     @Column(nullable = false)
     private Short duration;
 
-    @Column(name = "poster_url", nullable = false)
-    private String posterUrl;
+    @Column(name = "poster", nullable = false, columnDefinition = "TEXT")
+    private String poster;
 
     @Column(name = "age_rating", nullable = false)
     @Enumerated(EnumType.STRING)
@@ -46,8 +46,7 @@ public class Movie {
     @Enumerated(EnumType.STRING)
     private ContentType contentType;
 
-    //@ElementCollection(fetch = FetchType.LAZY)
-    @ElementCollection()
+    @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "movie_crew", joinColumns = @JoinColumn(name = "movie_id"))
     @Column(name = "crew_member_id")
     private List<Long> crewMemberIds;
@@ -55,5 +54,5 @@ public class Movie {
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "movie_genre", joinColumns = @JoinColumn(name = "movie_id"))
     @Column(name = "genre_id")
-    private List<Long> genreIds;
+    private List<Byte> genreIds;
 }

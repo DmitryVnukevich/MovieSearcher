@@ -1,13 +1,16 @@
 package com.example.moviesearcher.controller;
 
+import com.example.moviesearcher.dto.MovieDTO;
 import com.example.moviesearcher.dto.UserDTO;
 import com.example.moviesearcher.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.web.PagedModel;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
@@ -17,12 +20,12 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/sign-up")
-    public UserDTO register(@Valid @RequestBody UserDTO userDTO) {
+    public Map<String, Object> register(@Valid @RequestBody UserDTO userDTO) {
         return userService.saveUser(userDTO);
     }
 
     @PostMapping("/sign-in")
-    public String login(@Valid @RequestBody UserDTO userDTO) {
+    public Map<String, Object> login(@Valid @RequestBody UserDTO userDTO) {
         return userService.verifyUser(userDTO);
     }
 
@@ -37,5 +40,13 @@ public class UserController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
+    }
+
+    @GetMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public PagedModel<UserDTO> getUsers(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        return userService.findAllUsers(page, size);
     }
 }

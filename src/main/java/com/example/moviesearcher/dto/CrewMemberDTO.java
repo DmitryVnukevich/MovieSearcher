@@ -41,6 +41,6 @@ public class CrewMemberDTO {
         @Size(max = 255, message = "Bio cannot be longer than 255 characters")
         private String bio;
 
-        @NotBlank(message = "Photo URL is mandatory")
-        private String photoUrl;
+        @NotBlank(message = "Photo is mandatory")
+        private String photo;
 }

@@ -16,6 +16,9 @@ import org.springframework.data.web.PagedModel;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.constraints.NotBlank;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 @Service
@@ -26,6 +29,7 @@ public class MovieService {
     private final CrewMemberRepository crewMemberRepository;
     private final GenreRepository genreRepository;
     private final UserInfoRepository userInfoRepository;
+    private final CommentRepository commentRepository;
 
     @Transactional
     public MovieDTO saveMovie(MovieDTO movieDTO) {
@@ -37,9 +41,19 @@ public class MovieService {
         return MOVIE_MAPPER.movieToMovieDTO(movie);
     }
 
+    public PagedModel<MovieDTO> findAllMovies(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Movie> moviePage = movieRepository.findAll(pageable);
+        Page<MovieDTO> movieDTOPage = moviePage
+                .map(MOVIE_MAPPER::movieToMovieDTO)
+                .map(this::enrichMovieDTOWithAverageRating);
+        return new PagedModel<>(movieDTOPage);
+    }
+
     public MovieDTO findMovieById(Long id) {
         return movieRepository.findById(id)
                 .map(MOVIE_MAPPER::movieToMovieDTO)
+                .map(this::enrichMovieDTOWithAverageRating)
                 .orElse(null);
     }
 
@@ -51,8 +65,22 @@ public class MovieService {
 
         Pageable pageable = PageRequest.of(page, size);
         Page<Movie> moviePage = movieRepository.findMoviesByPreferences(userInfoDTO, pageable);
-        Page<MovieDTO> movieDTOPage = moviePage.map(MOVIE_MAPPER::movieToMovieDTO);
+        Page<MovieDTO> movieDTOPage = moviePage
+                .map(MOVIE_MAPPER::movieToMovieDTO)
+                .map(this::enrichMovieDTOWithAverageRating);
 
+        return new PagedModel<>(movieDTOPage);
+    }
+
+    public PagedModel<MovieDTO> searchMoviesByTitle(@NotBlank String query, int page, int size) {
+        if (query == null || query.trim().isEmpty()) {
+            throw new IllegalArgumentException("Search query cannot be empty");
+        }
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Movie> moviePage = movieRepository.findByTitleContainingIgnoreCase(query.trim(), pageable);
+        Page<MovieDTO> movieDTOPage = moviePage
+                .map(MOVIE_MAPPER::movieToMovieDTO)
+                .map(this::enrichMovieDTOWithAverageRating);
         return new PagedModel<>(movieDTOPage);
     }
 
@@ -81,8 +109,8 @@ public class MovieService {
         if (movieDTO.getDuration() != null) {
             movieFromDb.setDuration(movieDTO.getDuration());
         }
-        if (movieDTO.getPosterUrl() != null) {
-            movieFromDb.setPosterUrl(movieDTO.getPosterUrl());
+        if (movieDTO.getPoster() != null) {
+            movieFromDb.setPoster(movieDTO.getPoster());
         }
         if (movieDTO.getAgeRating() != null) {
             movieFromDb.setAgeRating(movieDTO.getAgeRating());
@@ -112,12 +140,18 @@ public class MovieService {
         }
     }
 
-    private void validateGenreIds(List<Long> genreIds) {
+    private void validateGenreIds(List<Byte> genreIds) {
         if (genreIds != null) {
-            for (Long genreId : genreIds) {
+            for (Byte genreId : genreIds) {
                 genreRepository.findById(genreId)
                         .orElseThrow(() -> new IllegalArgumentException("Genre not found with ID: " + genreId));
             }
         }
+    }
+
+    private MovieDTO enrichMovieDTOWithAverageRating(MovieDTO movieDTO) {
+        Double averageRating = commentRepository.findAverageRatingByMovieId(movieDTO.getId());
+        movieDTO.setAverageRating(averageRating != null ? averageRating.floatValue() : null);
+        return movieDTO;
     }
 }

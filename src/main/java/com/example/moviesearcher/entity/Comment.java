@@ -14,7 +14,10 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "comment")
+@Table(name = "comment",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"movie_id", "user_id"})
+        })
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,9 +34,9 @@ public class Comment {
     @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm")
     private Date createdAt;
 
-    @Column(name = "user_id", nullable = false)
+    @Column(name = "user_id", nullable = false, updatable = false)
     private Long userId;
 
-    @Column(name = "movie_id", nullable = false)
+    @Column(name = "movie_id", nullable = false, updatable = false)
     private Long movieId;
 }

@@ -52,11 +52,13 @@ public class MovieRecommendationRepositoryImpl implements MovieRecommendationRep
         List<Predicate> predicates = new ArrayList<>();
         List<Predicate> minimalPredicates = new ArrayList<>();
 
+        // Условие для жанров
         if (userInfoDTO.getPreferredGenreIds() != null && !userInfoDTO.getPreferredGenreIds().isEmpty()) {
             Join<Movie, Long> genreJoin = root.join("genreIds", JoinType.LEFT);
             minimalPredicates.add(genreJoin.in(userInfoDTO.getPreferredGenreIds()));
         }
 
+        // Условие для актёров и режиссёров
         List<Long> crewIds = new ArrayList<>();
         if (userInfoDTO.getFavoriteActorIds() != null && !userInfoDTO.getFavoriteActorIds().isEmpty()) {
             crewIds.addAll(userInfoDTO.getFavoriteActorIds());
@@ -69,8 +71,30 @@ public class MovieRecommendationRepositoryImpl implements MovieRecommendationRep
             minimalPredicates.add(crewJoin.in(crewIds));
         }
 
+        // Условие для возрастного рейтинга
+        if (userInfoDTO.getPreferredAgeRating() != null) {
+            minimalPredicates.add(cb.equal(root.get("ageRating"), userInfoDTO.getPreferredAgeRating()));
+        }
+
+        // Условие для типа контента
+        if (userInfoDTO.getContentTypePreference() != null) {
+            minimalPredicates.add(cb.equal(root.get("contentType"), userInfoDTO.getContentTypePreference()));
+        }
+
+        // Условие для минимальной длительности
+        if (userInfoDTO.getMinDuration() != null) {
+            minimalPredicates.add(cb.greaterThanOrEqualTo(root.get("duration"), userInfoDTO.getMinDuration()));
+        }
+
+        // Условие для максимальной длительности
+        if (userInfoDTO.getMaxDuration() != null) {
+            minimalPredicates.add(cb.lessThanOrEqualTo(root.get("duration"), userInfoDTO.getMaxDuration()));
+        }
+
+        // Формирование финального предиката
         if (!minimalPredicates.isEmpty()) {
-            predicates.add(cb.or(minimalPredicates.toArray(new Predicate[0])));
+            predicates.add(cb.or(minimalPredicates.toArray(new Predicate[0]))); // OR для мягкой фильтрации
+            // Или используйте cb.and(...) для строгой фильтрации
         } else {
             predicates.add(cb.equal(cb.literal(1), 0)); // Ложное условие
         }

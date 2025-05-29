@@ -100,11 +100,17 @@ public class UserInfoService {
     }
 
     @Transactional
-    public void deleteUserInfo(Long id) {
-        if (!userInfoRepository.existsById(id)) {
-            throw new IllegalArgumentException("UserInfo not found with ID: " + id);
+    public void deleteUserInfoByUserId(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
+
+        UserInfo userInfo = user.getUserInfo();
+        if (userInfo == null) {
+            throw new IllegalArgumentException("UserInfo not found for user ID: " + userId);
         }
-        userInfoRepository.deleteById(id);;
+
+        user.setUserInfo(null);
+        userRepository.save(user);
     }
 
     private void validateRanges(UserInfoDTO userInfoDTO) {
@@ -120,7 +126,7 @@ public class UserInfoService {
 
     private void validateIds(UserInfoDTO userInfoDTO) {
         if (userInfoDTO.getPreferredGenreIds() != null) {
-            for (Long genreId : userInfoDTO.getPreferredGenreIds()) {
+            for (Byte genreId : userInfoDTO.getPreferredGenreIds()) {
                 genreRepository.findById(genreId)
                         .orElseThrow(() -> new IllegalArgumentException("Genre not found with ID: " + genreId));
             }

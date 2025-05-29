@@ -31,13 +31,28 @@ public class MovieController {
         return movie;
     }
 
+    @GetMapping
+    public PagedModel<MovieDTO> getMovies(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "12") int size) {
+        return movieService.findAllMovies(page, size);
+    }
+
     @GetMapping("/by-preferences")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_MODERATOR', 'ROLE_ADMIN')")
     public PagedModel<MovieDTO> getMoviesByPreferences(
             @RequestParam("id") Long userId,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "7") int size) {
+            @RequestParam(defaultValue = "12") int size) {
         return movieService.findMoviesByPreferences(userId, page, size);
+    }
+
+    @GetMapping("/search")
+    public PagedModel<MovieDTO> searchMovies(
+            @RequestParam("query") String query,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "12") int size) {
+        return movieService.searchMoviesByTitle(query, page, size);
     }
 
     @PutMapping("/{id}")

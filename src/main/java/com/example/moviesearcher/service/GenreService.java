@@ -34,7 +34,7 @@ public class GenreService {
                 .collect(Collectors.toList());
     }
 
-    public GenreDTO findGenreById(Long id) {
+    public GenreDTO findGenreById(Byte id) {
         return genreRepository.findById(id)
                 .map(GENRE_MAPPER::genreToGenreDTO)
                 .orElse(null);
@@ -47,7 +47,7 @@ public class GenreService {
     }
 
     @Transactional
-    public void deleteGenre(Long id) {
+    public void deleteGenre(Byte id) {
         if (!genreRepository.existsById(id)) {
             throw new IllegalArgumentException("Genre not found with ID: " + id);
         }

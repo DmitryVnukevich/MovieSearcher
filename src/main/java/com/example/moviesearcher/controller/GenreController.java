@@ -29,14 +29,14 @@ public class GenreController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public GenreDTO updateGenre(@PathVariable Long id, @Valid @RequestBody GenreDTO genreDTO) {
+    public GenreDTO updateGenre(@PathVariable Byte id, @Valid @RequestBody GenreDTO genreDTO) {
         genreDTO.setId(id);
         return genreService.updateGenre(genreDTO);
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public void deleteGenre(@PathVariable Long id) {
+    public void deleteGenre(@PathVariable Byte id) {
         genreService.deleteGenre(id);
     }
 }

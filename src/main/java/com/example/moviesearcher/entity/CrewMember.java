@@ -28,11 +28,11 @@ public class CrewMember {
     private String lastName;
 
     @ElementCollection
-    @Column(nullable = false)
+    @Column(name = "role", nullable = false)
     @Enumerated(EnumType.STRING)
     private List<CrewRole> roles;
 
-    @Column(name = "birth_date", nullable = false)
+    @Column(name = "birthdate", nullable = false)
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     private Date birthDate;
@@ -40,6 +40,6 @@ public class CrewMember {
     @Column(nullable = false)
     private String bio;
 
-    @Column(name = "photo_url", nullable = false)
-    private String photoUrl;
+    @Column(name = "photo", nullable = false, columnDefinition = "TEXT")
+    private String photo;
 }

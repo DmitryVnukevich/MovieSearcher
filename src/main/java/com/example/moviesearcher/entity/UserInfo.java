@@ -26,7 +26,7 @@ public class UserInfo {
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "user_info_genres", joinColumns = @JoinColumn(name = "user_info_id"))
     @Column(name = "genre_id")
-    private List<Long> preferredGenreIds;
+    private List<Byte> preferredGenreIds;
 
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "user_info_actors", joinColumns = @JoinColumn(name = "user_info_id"))

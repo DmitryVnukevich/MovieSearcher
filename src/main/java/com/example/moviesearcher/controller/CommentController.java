@@ -3,6 +3,7 @@ package com.example.moviesearcher.controller;
 import com.example.moviesearcher.dto.CommentDTO;
 import com.example.moviesearcher.service.CommentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,9 +23,12 @@ public class CommentController {
         return commentService.saveComment(commentDTO);
     }
 
-    @GetMapping("/{id}")
-    public List<CommentDTO> findCommentsByMovieId(@PathVariable Long id) {
-        return commentService.findCommentsByMovieId(id);
+    @GetMapping("/{movieId}")
+    public Page<CommentDTO> getCommentsByMovieId(
+            @PathVariable Long movieId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return commentService.findCommentsByMovieId(movieId, page, size);
     }
 
     @PutMapping("/{id}")
@@ -35,7 +39,7 @@ public class CommentController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ROLE_MODERATOR', 'ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_MODERATOR', 'ROLE_ADMIN')")
     public void deleteComment(@PathVariable Long id) {
         commentService.deleteComment(id);
     }

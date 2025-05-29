@@ -14,7 +14,7 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 public class GenreDTO {
 
-    private Long id;
+    private Byte id;
 
     @NotBlank(message = "Genre name cannot be blank")
     @Size(min = 1, max = 50, message = "Genre name must be between 1 and 50 characters")

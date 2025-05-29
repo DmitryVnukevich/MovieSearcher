@@ -15,7 +15,7 @@ import lombok.AllArgsConstructor;
 public class Genre {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Byte id;
 
     @Column(nullable = false, unique = true)
     private String name;
