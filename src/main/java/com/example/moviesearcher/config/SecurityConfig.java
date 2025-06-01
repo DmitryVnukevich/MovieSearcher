@@ -2,7 +2,6 @@ package com.example.moviesearcher.config;
 
 import com.example.moviesearcher.service.UserPrincipalsService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -36,17 +35,15 @@ public class SecurityConfig {
                 .cors(cors -> cors
                         .configurationSource(request -> {
                             var config = new org.springframework.web.cors.CorsConfiguration();
-                            config.setAllowedOrigins(List.of("http://localhost:8081")); // 👈 фронт
+                            config.setAllowedOrigins(List.of("http://localhost:8081"));
                             config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                             config.setAllowedHeaders(List.of("*"));
-                            config.setAllowCredentials(true); // если используешь куки/токены
+                            config.setAllowCredentials(true);
                             return config;
                         }))
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/auth/sign-up", "/auth/sign-in").permitAll()
-                        .requestMatchers("/moderator/**").hasRole("MODERATOR")
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/auth/sign-up", "/api/auth/sign-in", "/api/movie/" , "/api/movie/{id}", "/api/movie/search").permitAll()
                         .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

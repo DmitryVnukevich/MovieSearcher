@@ -6,13 +6,13 @@ import com.example.moviesearcher.entity.User;
 import com.example.moviesearcher.entity.UserInfo;
 import static com.example.moviesearcher.mapper.UserInfoMapper.USER_INFO_MAPPER;
 
-import com.example.moviesearcher.repository.CrewMemberRepository;
-import com.example.moviesearcher.repository.GenreRepository;
-import com.example.moviesearcher.repository.UserInfoRepository;
-import com.example.moviesearcher.repository.UserRepository;
+import com.example.moviesearcher.repository.*;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -21,7 +21,7 @@ public class UserInfoService {
     private final UserInfoRepository userInfoRepository;
     private final UserRepository userRepository;
     private final GenreRepository genreRepository;
-    private final CrewMemberRepository crewMemberRepository;
+    private final MovieCrewRepository movieCrewRepository;
 
     @Transactional
     public UserInfoDTO saveUserInfo(UserInfoDTO userInfoDTO) {
@@ -44,23 +44,23 @@ public class UserInfoService {
     public UserInfoDTO findUserInfoById(Long id) {
         return userInfoRepository.findById(id)
                 .map(USER_INFO_MAPPER::userInfoToUserInfoDTO)
-                .orElse(null);
+                .orElseThrow(() -> new EntityNotFoundException("UserInfo not found with ID: " + id));
     }
 
     public UserInfoDTO findUserInfoByUserId(Long userId) {
         return userInfoRepository.findByUserId(userId)
                 .map(USER_INFO_MAPPER::userInfoToUserInfoDTO)
-                .orElse(null);
+                .orElseThrow(() -> new EntityNotFoundException("UserInfo not found for user ID: " + userId));
     }
 
     @Transactional
     public UserInfoDTO updateUserInfo(UserInfoDTO userInfoDTO) {
         UserInfo userInfoFromDb = userInfoRepository.findById(userInfoDTO.getId())
-                .orElseThrow(() -> new IllegalArgumentException("UserInfo not found with ID: " + userInfoDTO.getId()));
+                .orElseThrow(() -> new EntityNotFoundException("UserInfo not found with ID: " + userInfoDTO.getId()));
 
         if (userInfoDTO.getUserId() != null) {
             User user = userRepository.findById(userInfoDTO.getUserId())
-                    .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userInfoDTO.getUserId()));
+                    .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + userInfoDTO.getUserId()));
             userInfoFromDb.setUser(user);
         }
 
@@ -102,11 +102,11 @@ public class UserInfoService {
     @Transactional
     public void deleteUserInfoByUserId(Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
+                .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + userId));
 
         UserInfo userInfo = user.getUserInfo();
         if (userInfo == null) {
-            throw new IllegalArgumentException("UserInfo not found for user ID: " + userId);
+            throw new EntityNotFoundException("UserInfo not found for user ID: " + userId);
         }
 
         user.setUserInfo(null);
@@ -128,21 +128,23 @@ public class UserInfoService {
         if (userInfoDTO.getPreferredGenreIds() != null) {
             for (Byte genreId : userInfoDTO.getPreferredGenreIds()) {
                 genreRepository.findById(genreId)
-                        .orElseThrow(() -> new IllegalArgumentException("Genre not found with ID: " + genreId));
+                        .orElseThrow(() -> new EntityNotFoundException("Genre not found with ID: " + genreId));
             }
         }
-        if (userInfoDTO.getFavoriteActorIds() != null) {
-            for (Long actorId : userInfoDTO.getFavoriteActorIds()) {
-                crewMemberRepository.findById(actorId)
-                        .filter(cm -> cm.getRoles().contains(CrewRole.ACTOR))
-                        .orElseThrow(() -> new IllegalArgumentException("Actor not found with ID: " + actorId));
+        if (userInfoDTO.getFavoriteActorIds() != null && !userInfoDTO.getFavoriteActorIds().isEmpty()) {
+            List<Long> invalidActorIds = userInfoDTO.getFavoriteActorIds().stream()
+                    .filter(id -> movieCrewRepository.findByCrewMemberId(id).stream()
+                            .noneMatch(mc -> mc.getRoles().contains(CrewRole.ACTOR))).toList();
+            if (!invalidActorIds.isEmpty()) {
+                throw new EntityNotFoundException("Crew members with IDs " + invalidActorIds + " are not actors");
             }
         }
-        if (userInfoDTO.getFavoriteDirectorIds() != null) {
-            for (Long directorId : userInfoDTO.getFavoriteDirectorIds()) {
-                crewMemberRepository.findById(directorId)
-                        .filter(cm -> cm.getRoles().contains(CrewRole.DIRECTOR))
-                        .orElseThrow(() -> new IllegalArgumentException("Director not found with ID: " + directorId));
+        if (userInfoDTO.getFavoriteDirectorIds() != null && !userInfoDTO.getFavoriteDirectorIds().isEmpty()) {
+            List<Long> invalidDirectorIds = userInfoDTO.getFavoriteDirectorIds().stream()
+                    .filter(id -> movieCrewRepository.findByCrewMemberId(id).stream()
+                            .noneMatch(mc -> mc.getRoles().contains(CrewRole.DIRECTOR))).toList();
+            if (!invalidDirectorIds.isEmpty()) {
+                throw new EntityNotFoundException("Crew members with IDs " + invalidDirectorIds + " are not directors");
             }
         }
     }

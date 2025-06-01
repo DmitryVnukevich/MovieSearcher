@@ -47,11 +47,6 @@ public class Movie {
     private ContentType contentType;
 
     @ElementCollection(fetch = FetchType.LAZY)
-    @CollectionTable(name = "movie_crew", joinColumns = @JoinColumn(name = "movie_id"))
-    @Column(name = "crew_member_id")
-    private List<Long> crewMemberIds;
-
-    @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "movie_genre", joinColumns = @JoinColumn(name = "movie_id"))
     @Column(name = "genre_id")
     private List<Byte> genreIds;

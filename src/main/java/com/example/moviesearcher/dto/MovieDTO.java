@@ -50,7 +50,7 @@ public class MovieDTO {
 
     private Float averageRating;
 
-    private List<Long> crewMemberIds;
+    private List<MovieCrewDTO> crew;
 
     private List<Byte> genreIds;
 }

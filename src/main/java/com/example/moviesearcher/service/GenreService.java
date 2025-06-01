@@ -1,10 +1,18 @@
 package com.example.moviesearcher.service;
 
+import com.example.moviesearcher.dto.CrewMemberDTO;
 import com.example.moviesearcher.dto.GenreDTO;
+import com.example.moviesearcher.entity.CrewMember;
 import com.example.moviesearcher.entity.Genre;
+
+import static com.example.moviesearcher.mapper.CrewMemberMapper.CREW_MEMBER_MAPPER;
 import static com.example.moviesearcher.mapper.GenreMapper.GENRE_MAPPER;
 import com.example.moviesearcher.repository.GenreRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedModel;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +40,13 @@ public class GenreService {
         return genreRepository.findAll().stream()
                 .map(GENRE_MAPPER::genreToGenreDTO)
                 .collect(Collectors.toList());
+    }
+
+    public PagedModel<GenreDTO> findPagedGenres(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Genre> genrePage = genreRepository.findAll(pageable);
+        Page<GenreDTO> genreDTOPage = genrePage.map(GENRE_MAPPER::genreToGenreDTO);
+        return new PagedModel<>(genreDTOPage);
     }
 
     public GenreDTO findGenreById(Byte id) {

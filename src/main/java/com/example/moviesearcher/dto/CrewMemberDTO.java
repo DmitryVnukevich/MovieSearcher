@@ -1,6 +1,5 @@
 package com.example.moviesearcher.dto;
 
-import com.example.moviesearcher.entity.CrewRole;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,7 +9,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.*;
 import java.util.Date;
-import java.util.List;
 
 @Getter
 @Setter
@@ -27,9 +25,6 @@ public class CrewMemberDTO {
         @NotBlank(message = "Last name is mandatory")
         @Size(min = 1, max = 50, message = "Last name must be between 1 and 50 characters")
         private String lastName;
-
-        @NotEmpty(message = "Roles cannot be empty")
-        private List<CrewRole> roles;
 
         @NotNull(message = "Birth date is mandatory")
         @Past(message = "Birth date must be in the past")

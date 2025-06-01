@@ -1,6 +1,5 @@
 package com.example.moviesearcher.controller;
 
-import com.example.moviesearcher.dto.MovieDTO;
 import com.example.moviesearcher.dto.UserDTO;
 import com.example.moviesearcher.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -9,11 +8,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class UserController {
 

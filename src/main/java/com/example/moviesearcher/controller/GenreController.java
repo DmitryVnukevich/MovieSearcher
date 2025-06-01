@@ -3,6 +3,7 @@ package com.example.moviesearcher.controller;
 import com.example.moviesearcher.dto.GenreDTO;
 import com.example.moviesearcher.service.GenreService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.web.PagedModel;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,7 +11,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/genre")
+@RequestMapping("/api/genre")
 @RequiredArgsConstructor
 public class GenreController {
 
@@ -25,6 +26,18 @@ public class GenreController {
     @GetMapping
     public List<GenreDTO> getAllGenres() {
         return genreService.findAllGenres();
+    }
+
+    @GetMapping("/paged")
+    public PagedModel<GenreDTO> getPagedGenres (
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        return genreService.findPagedGenres(page, size);
+    }
+
+    @GetMapping("/{id}")
+    public GenreDTO getGenreById (@PathVariable Byte id) {
+        return genreService.findGenreById(id);
     }
 
     @PutMapping("/{id}")

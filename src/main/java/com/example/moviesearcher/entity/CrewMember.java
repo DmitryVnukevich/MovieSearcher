@@ -8,7 +8,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
-import java.util.List;
 
 @Getter
 @Setter
@@ -26,11 +25,6 @@ public class CrewMember {
 
     @Column(name = "lastname", nullable = false, length = 50)
     private String lastName;
-
-    @ElementCollection
-    @Column(name = "role", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private List<CrewRole> roles;
 
     @Column(name = "birthdate", nullable = false)
     @Temporal(TemporalType.DATE)

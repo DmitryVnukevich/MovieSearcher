@@ -1,11 +1,8 @@
 package com.example.moviesearcher.service;
 
-import com.example.moviesearcher.dto.MovieDTO;
 import com.example.moviesearcher.dto.UserDTO;
-import com.example.moviesearcher.entity.Movie;
 import com.example.moviesearcher.entity.User;
 
-import static com.example.moviesearcher.mapper.MovieMapper.MOVIE_MAPPER;
 import static com.example.moviesearcher.mapper.UserMapper.USER_MAPPER;
 
 import com.example.moviesearcher.entity.UserRole;
@@ -24,9 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

@@ -12,7 +12,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/user-info")
+@RequestMapping("/api/user-info")
 @RequiredArgsConstructor
 public class UserInfoController {
 
@@ -34,9 +34,7 @@ public class UserInfoController {
 
     @GetMapping("/actors")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_MODERATOR', 'ROLE_ADMIN')")
-    public List<CrewMemberDTO> getAllActors() {
-        return crewMemberService.findActors();
-    }
+    public List<CrewMemberDTO> getAllActors() { return crewMemberService.findActors(); }
 
     @GetMapping("/directors")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_MODERATOR', 'ROLE_ADMIN')")

@@ -1,8 +1,6 @@
 package com.example.moviesearcher.controller;
 
 import com.example.moviesearcher.dto.CrewMemberDTO;
-import com.example.moviesearcher.dto.GenreDTO;
-import com.example.moviesearcher.dto.UserDTO;
 import com.example.moviesearcher.service.CrewMemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.web.PagedModel;
@@ -13,7 +11,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/crew-member")
+@RequestMapping("/api/crew-member")
 @RequiredArgsConstructor
 public class CrewMemberController {
 
@@ -49,7 +47,7 @@ public class CrewMemberController {
         crewMemberService.deleteCrewMember(id);
     }
 
-    @GetMapping("/pages")
+    @GetMapping("/paged")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public PagedModel<CrewMemberDTO> getCrewMemberPages(
             @RequestParam(defaultValue = "0") int page,

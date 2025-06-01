@@ -1,19 +1,16 @@
 package com.example.moviesearcher.controller;
 
 import com.example.moviesearcher.dto.MovieDTO;
-import com.example.moviesearcher.dto.UserInfoDTO;
 import com.example.moviesearcher.service.MovieService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.web.PagedModel;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/movie")
+@RequestMapping("/api/movie")
 @RequiredArgsConstructor
 public class MovieController {
 
