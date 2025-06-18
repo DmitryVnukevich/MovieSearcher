@@ -43,7 +43,15 @@ public class SecurityConfig {
                         }))
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/api/auth/sign-up", "/api/auth/sign-in", "/api/movie/" , "/api/movie/{id}", "/api/movie/search").permitAll()
+                        .requestMatchers(
+                                "/api/auth/sign-up",
+                                "/api/auth/sign-in",
+                                "/api/genre",
+                                "/api/movie",
+                                "/api/movie/{id}",
+                                "/api/movie/search",
+                                "/api/crew-member/{id}",
+                                "/api/comment/{movieId}").permitAll()
                         .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
