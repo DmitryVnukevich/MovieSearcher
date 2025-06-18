@@ -1,46 +1,49 @@
 package com.example.moviesearcher.controller;
 
-import com.example.moviesearcher.entities.MovieCrew;
+import com.example.moviesearcher.dto.MovieCrewDTO;
 import com.example.moviesearcher.service.MovieCrewService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/movie-crew")
+@RequestMapping("/api/movie-crew")
+@RequiredArgsConstructor
 public class MovieCrewController {
 
     private final MovieCrewService movieCrewService;
 
-    @Autowired
-    public MovieCrewController(MovieCrewService movieCrewService) {
-        this.movieCrewService = movieCrewService;
-    }
-
     @PostMapping
-    public MovieCrew createMovieCrew(@RequestBody MovieCrew movieCrew) {
-        return movieCrewService.saveMovieCrew(movieCrew);
-    }
-
-    @GetMapping
-    public List<MovieCrew> getAllMovieCrews() {
-        return movieCrewService.findAllMovieCrews();
-    }
-
-    @GetMapping("/{id}")
-    public MovieCrew getMovieCrewById(@PathVariable Long id) {
-        return movieCrewService.findMovieCrewById(id);
+    @PreAuthorize("hasAnyRole('ROLE_MODERATOR', 'ROLE_ADMIN')")
+    public MovieCrewDTO createMovieCrew(@Valid @RequestBody MovieCrewDTO movieCrewDTO) {
+        return movieCrewService.createMovieCrew(movieCrewDTO);
     }
 
     @PutMapping("/{id}")
-    public MovieCrew updateMovieCrew(@PathVariable Long id, @RequestBody MovieCrew movieCrewDetails) {
-        movieCrewDetails.setId(id);
-        return movieCrewService.updateMovieCrew(movieCrewDetails);
+    @PreAuthorize("hasAnyRole('ROLE_MODERATOR', 'ROLE_ADMIN')")
+    public MovieCrewDTO updateMovieCrew(@PathVariable Long id, @Valid @RequestBody MovieCrewDTO movieCrewDTO) {
+        movieCrewDTO.setId(id);
+        return movieCrewService.updateMovieCrew(movieCrewDTO);
+    }
+
+    @GetMapping("/movie/{movieId}")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_MODERATOR', 'ROLE_ADMIN')")
+    public List<MovieCrewDTO> findCrewByMovieId(@PathVariable Long movieId) {
+        return movieCrewService.findCrewByMovieId(movieId);
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_MODERATOR', 'ROLE_ADMIN')")
     public void deleteMovieCrew(@PathVariable Long id) {
         movieCrewService.deleteMovieCrew(id);
+    }
+
+    @DeleteMapping("/movie/{movieId}")
+    @PreAuthorize("hasAnyRole('ROLE_MODERATOR', 'ROLE_ADMIN')")
+    public void deleteByMovieId(@PathVariable Long movieId) {
+        movieCrewService.deleteByMovieId(movieId);
     }
 }
